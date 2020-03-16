@@ -1,0 +1,48 @@
+.SummonerProfile {
+    display: grid;
+    /* grid-template-columns: min-content max-content 1fr max-content; */
+    grid-template-rows: max-content max-content;
+    grid-column-gap: 2rem;
+    align-items: center;
+    padding: 0 6rem;
+    animation: fadeIn 1s .4s forwards;
+    opacity: 0;
+}
+
+.Profile {
+    display: grid;
+    grid-template-columns: min-content max-content 1fr max-content;
+    grid-column-gap: 2rem;
+    align-items: center;
+}
+
+.ProfileIcon {
+    width: 8rem;
+    height: 8rem;
+}
+
+.Level {
+    color: #4287f5;
+}
+
+.Name {
+    font-size: 2rem;
+    letter-spacing: 2px;
+}
+
+.NameLvl {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+}
+
+
+@keyframes fadeIn {
+    0% {
+        opacity: 0;
+    }
+
+    100% {
+        opacity: 1;
+    }
+}

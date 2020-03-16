@@ -1,0 +1,10 @@
+.ChampResult {
+    display: grid;
+    grid-row-gap: .5rem;
+    grid-template-rows: repeat(2, min-content);
+}
+
+.ResultText {
+    text-align: center;
+    font-size: 1.8rem;
+}

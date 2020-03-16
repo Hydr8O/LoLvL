@@ -1,0 +1,10 @@
+.SummonerRank {
+    display: grid;
+    justify-content: center;
+    grid-column-gap: 4rem;
+    grid-template-columns: min-content min-content;
+}
+
+
+
+

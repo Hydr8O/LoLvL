@@ -1,0 +1,21 @@
+.KDA {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: center;
+}
+
+.KDAText {
+    letter-spacing: .3rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.KillStreak {
+    background-color: var(--color-gold);
+    color: black;
+    border-radius: 4px;
+    padding: .5rem 1rem;
+}

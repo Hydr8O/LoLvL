@@ -1,0 +1,59 @@
+.Search {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 1rem 0;
+    animation: fadeIn .5s forwards;
+    flex: 1;
+    
+}
+
+.Input {
+    border: none;
+    border-radius: 10rem;
+    background-color: #eee;
+    padding: 1rem 3.5rem 1rem 1rem;
+    font-size: 1.5rem;
+    transition: all .5s;
+    width: 30%;
+    
+}
+
+.Input:focus {
+    width: 37%;
+    outline: none;
+    box-shadow: 0 .5rem 1rem rgba(0, 0, 0, 0.171);
+}
+
+.Icon {
+    height: 2.5rem;
+    width: 2.5rem;
+    fill: rgb(133, 128, 128);
+}
+
+.Button {
+    background-color: transparent;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    margin-left: -3.5rem;
+    width: 3.5rem;
+    cursor: pointer;
+}
+
+.Button:focus {
+    outline: none;
+}
+
+@keyframes fadeIn {
+    0% {
+        opacity: 0;
+        transform: scale(0);
+    }
+
+    100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+}

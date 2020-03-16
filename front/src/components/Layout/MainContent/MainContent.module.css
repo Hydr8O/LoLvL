@@ -1,0 +1,8 @@
+.MainContent {
+    position: relative;
+    grid-column: col-start 1 / col-end 8;
+    display: grid;
+    grid-template-rows: min-content min-content;
+    grid-row-gap: 2rem;
+    padding: 3rem;
+}

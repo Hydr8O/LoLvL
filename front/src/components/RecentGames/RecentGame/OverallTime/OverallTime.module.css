@@ -1,0 +1,7 @@
+.OverallTime {
+    position: absolute;
+    bottom: 0;
+    right: 20%;
+    background-color: var(--color-primary);
+    color: white;
+}

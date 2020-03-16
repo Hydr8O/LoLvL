@@ -1,0 +1,25 @@
+.RecentGame {
+    padding: 1rem;
+    position: relative;
+    display: grid;
+    grid-template-columns: min-content 11rem max-content max-content max-content;
+    grid-column-gap: 2rem;
+    z-index: 1;
+}
+
+.Win {
+    background-color: var(--color-green-light);
+}
+
+.WinText {
+    color: var(--color-green-dark);
+    
+}
+
+.LossText {
+    color: var(--color-red);
+}
+
+.Loss {
+    background-color: var(--color-red-light);
+}

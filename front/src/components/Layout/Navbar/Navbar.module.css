@@ -1,0 +1,8 @@
+.Navbar {
+    grid-column: full-start / full-end;
+    background-color: var(--color-primary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 2rem;
+}

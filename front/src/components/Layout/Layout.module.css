@@ -1,0 +1,6 @@
+.Layout {
+    display: grid;
+    grid-row-gap: 3rem;
+    grid-template-rows: 6rem 1fr;
+    grid-template-columns: [full-start] 1fr [center-start] repeat(8, [col-start] 1fr [col-end]) [center-end] 1fr [full-end];
+}

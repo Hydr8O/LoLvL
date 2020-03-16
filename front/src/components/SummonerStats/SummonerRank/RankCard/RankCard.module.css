@@ -1,0 +1,82 @@
+.RankCard {
+    display: grid;
+    grid-template-rows: min-content max-content;
+    grid-row-gap: .5rem;
+    align-items: center;
+    animation: fadeInBottom .5s .7s forwards;
+    border: 1px solid var(--color-primary);
+    border-radius: 4px;
+    padding: 1rem;
+    box-shadow: 0 .5rem 1rem rgba(0, 0, 0, 0.192);
+    opacity: 0;
+}
+
+.Winrate {
+    text-align: center;
+}
+
+.Img {
+    height: 100%;
+}
+
+.ImgContainer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 15rem;
+    width: 15rem;
+}
+
+.RankType {
+    font-size: 2rem;
+    text-align: center;
+    padding-bottom: .5rem;
+    border-bottom: var(--border-bottom);
+}
+
+.RankStats {
+    display: grid;
+    grid-template-rows: repeat(4, min-content);
+    grid-row-gap: 1rem;
+    justify-content: center;
+    align-content: center;
+}
+
+.RankInfo {
+    display: grid;
+    grid-template-columns: min-content max-content;
+}
+
+.NoRank {
+    filter: brightness(0);
+}
+
+.LP {
+    color: var(--color-blue);
+    font-size: 1.8rem;
+    font-weight: 700;
+}
+
+.Wins {
+    font-size: 1.8rem;
+    color: var(--color-green);
+    font-weight: 700;
+}
+
+.Losses {
+    font-size: 1.8rem;
+    color: var(--color-red);
+    font-weight: 700;
+}
+
+@keyframes fadeInBottom {
+    0% {
+        opacity: 0;
+        transform: translateY(3rem);
+    }
+
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}

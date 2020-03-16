@@ -1,0 +1,54 @@
+.Button {
+    padding: 1rem 2rem;
+    border-radius: 6px;
+    display: inline-block;
+    
+    cursor: pointer;
+}
+
+.Button:focus {
+    outline: none;
+    box-shadow: 0 .5rem 1rem rgba(0, 0, 0, 0.192);
+}
+
+.Primary {
+    border: 1px solid var(--color-primary);
+    background-color: white;
+}
+
+.PrimaryAnimated {
+    border: 1px solid var(--color-primary);
+    background-color: white;
+    
+    
+}
+
+.PrimaryAnimated:hover {
+    background-color: var(--color-primary);
+    color: white;
+    animation: pulse 2s ease-in-out infinite;
+    box-shadow: 0 .5rem 1rem rgba(0, 0, 0, 0.192);
+}
+
+.Center {
+    justify-self: center;
+}
+
+.Primary:hover {
+    background-color: var(--color-primary);
+    color: white;
+}
+
+@keyframes pulse {
+    0% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.1);
+    }
+
+    100% {
+        transform: scale(1);
+    }
+}

@@ -1,0 +1,48 @@
+.Loading {
+    display: flex;
+    justify-content: space-around;
+    width: 10rem;
+    position: absolute;
+    
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.Circle {
+    border-radius: 50%;
+    animation-name: load;
+    animation-iteration-count: infinite;
+    animation-duration: 1.2s;
+    opacity: 0;
+    height: 2rem;
+    width: 2rem;
+    background-color: rgb(133, 128, 128);
+    
+}
+
+.First {
+    animation-delay: .4s;
+}
+
+.Second {
+    animation-delay: .7s;
+}
+
+.Third {
+    animation-delay: 1s;
+}
+
+@keyframes load {
+    0% {
+        opacity: 0;
+    }
+
+    50% {
+        opacity: 1;
+    }
+
+    100% {
+        opacity: 0;
+    }
+}

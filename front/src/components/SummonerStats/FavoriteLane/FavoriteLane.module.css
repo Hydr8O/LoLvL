@@ -1,0 +1,45 @@
+.FavoriteLane {
+    display: grid;
+    grid-template-rows: max-content min-content;
+    justify-items: center;
+    align-self: center;
+    grid-row-gap: 1rem;
+    animation: fadeInLeft .5s .6s forwards;
+    opacity: 0;
+}
+
+.Position {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.PositionImg {
+    width: 5rem;
+    height: 5rem;
+}
+
+.Positions {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    width: 80%;
+}
+
+.FavoritePosition {
+    width: 5rem;
+    height: 5rem;
+}
+
+@keyframes fadeInLeft {
+    0% {
+        transform: translateX(-3rem);
+        opacity: 0;
+    }
+
+    100% {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
