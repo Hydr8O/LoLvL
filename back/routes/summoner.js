@@ -1,29 +1,16 @@
 const express = require('express')
 const router = express.Router();
-const axios = require('axios');
+const summonerController = require('../controllers/summoner');
 
-router.get('/summoner/summonerInfo/:summonerName', (req, res) => {
-    const summonerName = req.params.summonerName;
-    axios.get(endpoints.summonerPoint.replace('summonerName', summonerName))
-        .then(({ data }) => {
-            res.json(data);
-        });
-});
+router.get('/summonerInfo/:summonerName', summonerController.getSummonerData);
 
-router.get('/summoner/rankInfo/:summonerId', (req, res) => {
-    const summonerId = req.params.summonerId;
-    axios.get(endpoints.rankPoint.replace('summonerId', summonerId))
-        .then(({ data }) => {
-            res.json(data);
-        });
-});
+router.get('/rankInfo/:summonerId', summonerController.getRankData);
 
-router.get('/summoner/masteryInfo/:summonerId', (req, res) => {
-    const summonerId = req.params.summonerId;
-    axios.get(endpoints.championMasteryPoint.replace('summonerId', summonerId))
-        .then(({ data }) => {
-            res.json(data);
-        });
-});
+
+router.get('/masteryInfo/:summonerId', summonerController.getMasteryData);
+
+router.post('/summonerInfo/:summonerName', summonerController.insertSummonerData);
+
+router.post('/gameStats/:summonerName', summonerController.insertGameStats);
 
 module.exports = router;

@@ -50,9 +50,11 @@ class Summoner extends Component {
                             totalDamageDealt: game.participantData.stats.totalDamageDealt,
                             wardsPlaced: game.participantData.stats.wardsPlaced,
                             gameDuration: game.gameDuration,
-                            lane: game.lane
+                            lane: game.lane,
+                            queueId: game.queueId
                         }
-                    })
+                    }),
+                    summonerId: this.props.summonerInfo.id
                 })
                 .then(res => {
                     console.log(res);
@@ -74,9 +76,11 @@ class Summoner extends Component {
                             totalDamageDealt: game.participantData.stats.totalDamageDealt,
                             wardsPlaced: game.participantData.stats.wardsPlaced,
                             gameDuration: game.gameDuration,
-                            lane: game.lane
+                            lane: game.lane,
+                            queueId: game.queueId
                         }
-                    })
+                    }),
+                    summonerId: this.props.summonerInfo.id,
                 })
                 .then(res => {
                     console.log(res);
