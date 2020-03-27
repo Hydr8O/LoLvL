@@ -22,6 +22,9 @@ const SummonerStats = (props) => {
                 profileIcon={props.profileIcon}
                 mainChamp={props.masteryInfo[0]}
                 analyzeSummoner={props.analyzeSummoner}
+                isInDb={props.isInDb}
+                showBackdrop={props.showBackdrop}
+                disableBtn={props.disableBtn}
                 />
                 <FavoriteLane matchesHistory={props.matchesHistory}/>
                 <SummonerRank rankStats={props.rankStats}/>

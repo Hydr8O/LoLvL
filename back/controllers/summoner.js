@@ -79,12 +79,13 @@ const insertGameStatsData = (gameStatsQuery, res) => {
 //Requests to riot API
 exports.getSummonerData = (req, res) => {
     const summonerName = req.params.summonerName;
-    axios.get(req.app.locals.endpoints.summonerPoint.replace('summonerName', summonerName))
+    console.log(encodeURI(req.app.locals.endpoints.summonerPoint.replace('summonerName', summonerName)));
+    axios.get(encodeURI(req.app.locals.endpoints.summonerPoint.replace('summonerName', summonerName)))
         .then(({ data }) => {
             res.json(data);
         })
         .catch(err => {
-            console.log(`${err.response.status} ${err.response.statusText}`);
+            console.log(`${err}`);
         });
 };
 
@@ -138,6 +139,7 @@ exports.insertGameStats = (req, res) => {
     gamesToInsert.then((games) => {
         if (games.length === 0) {
             console.log('Nothing to insert');
+            res.end('OK');
             return;
         };
 
@@ -145,5 +147,20 @@ exports.insertGameStats = (req, res) => {
     
         console.log(gameStatsQuery)
         insertGameStatsData(gameStatsQuery, res);
+    });
+};
+
+exports.isInDb = (req, res) => {
+    const id = req.params.summonerId;
+
+    dbPool.query(`SELECT id FROM summoner WHERE id = '${id}'`, (err, response) => {
+        if (err) {
+            console.log(err);
+            return;
+        }
+        
+        res.json({
+            isInDb: response.rows.length === 0 ? false : true
+        });
     });
 };

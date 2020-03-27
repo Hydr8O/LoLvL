@@ -2,12 +2,12 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const axios = require('axios');
 const cors = require('cors');
-const initEndpoints = require('./endpoints');
 const versionDemon = require('./demons/getNewVersion');
+const gameStatsDemon = require('./demons/getLastGameStats');
 const summonerRoutes = require('./routes/summoner');
 
 
-
+let versionDemonInterval, gameStatsDemonInterval;
 const app = express();
 
 app.use(cors({ origin: 'http://localhost:3000' }));
@@ -35,6 +35,10 @@ app.get('/matches/:accountId', (req, res) => {
 
 
 app.listen(1234, () => {
-    versionDemon(app);
+    versionDemon(app)
+    .then(interval => {
+        versionDemonInterval = interval;
+        gameStatsDemonInterval = gameStatsDemon(app.locals.endpoints);
+    });
     console.log('server started');
 });

@@ -5,5 +5,6 @@ CREATE TABLE summoner(
     accountId TEXT UNIQUE NOT NULL,
     level INT NOT NULL,
     revisionDate TIMESTAMP NOT NULL,
-    profileIconId INT NOT NULL
+    profileIconId INT NOT NULL,
+    statsUpdated TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );

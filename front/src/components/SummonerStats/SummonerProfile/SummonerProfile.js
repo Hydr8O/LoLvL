@@ -4,7 +4,6 @@ import Button from '../../Button/Button';
 import MainChampion from './MainChampion/MainChampion';
 
 const SummonerProfile = (props) => {
-
     return (
         <div className={classes.SummonerProfile}>
             <div className={classes.Profile}>
@@ -13,12 +12,22 @@ const SummonerProfile = (props) => {
                     <p className={classes.Name}>{props.name}</p>
                     <p>Level: <span className={classes.Level}>{props.level}</span></p>
                 </div>  
-                <Button 
-                type='Primary' 
-                align='Center' 
-                onClick={props.analyzeSummoner}>
-                    Analyze Summoner Info
-                </Button>
+                {
+                    !props.isInDb ? 
+                    <Button 
+                    type='Primary' 
+                    align='Center' 
+                    disabled={props.disableBtn}
+                    onClick={props.analyzeSummoner}>
+                        Analyze Summoner Info
+                    </Button> : 
+                    <Button 
+                    type='Primary' 
+                    align='Center' 
+                    onClick={props.showBackdrop}>
+                        Quests
+                    </Button>
+                }
                 <MainChampion champion={props.mainChamp}/>
             </div>
         </div>

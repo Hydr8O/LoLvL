@@ -8,7 +8,8 @@ const initialState = {
     numberOfMatches: 10,
     recentGames: undefined,
     allLoaded: false,
-    findSummonerHandler: undefined
+    findSummonerHandler: undefined,
+    isInDb: false
 };
 
 const reducer = (state = initialState, action) => {
@@ -56,6 +57,12 @@ const reducer = (state = initialState, action) => {
                 numberOfMatches: 10,
                 recentGames: undefined,
                 allLoaded: false
+            }
+        case 'SET_IN_DB':
+            console.log('set in db')
+            return {
+                ...state,
+                isInDb: action.payload
             }
     }; 
     return state

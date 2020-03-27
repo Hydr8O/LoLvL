@@ -4,12 +4,28 @@ import RecentGames from '../../components/RecentGames/RecentGames';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import Loading from '../../components/Loading/Loading';
+import Backdrop from '../../components/Backdrop/Backdrop';
+import Popup from '../../components/Popup/Popup';
 import { idToName } from '../../utils/mapNames';
 import axios from 'axios';
 
 const ITEMS = ["item0", "item1", "item2", "item3", "item4", "item5", "item6"];
 
 class Summoner extends Component {
+
+    state = {
+        showBackdrop: false,
+        disableBtn: false
+    }
+
+    showBackdropHandler = () => {
+        this.setState({showBackdrop: true});
+    };
+
+    hideBackdropHandler = () => {
+        console.log('hide');
+        this.setState({showBackdrop: false});
+    };
 
     onScrollLoadHandler = () => {
         if (window.innerHeight + window.pageYOffset > document.body.clientHeight - 50 &&
@@ -27,7 +43,7 @@ class Summoner extends Component {
     }
 
     analyzeSummonerHandler = () => {
-
+        this.setState({disableBtn: true});
         axios.post(`http://localhost:1234/summoner/summonerInfo/${this.props.summonerInfo.name}`,
             {
                 summonerInfo: this.props.summonerInfo
@@ -58,6 +74,7 @@ class Summoner extends Component {
                 })
                 .then(res => {
                     console.log(res);
+                    this.props.onInDb(true);
                 });
         } else {
     
@@ -84,6 +101,8 @@ class Summoner extends Component {
                 })
                 .then(res => {
                     console.log(res);
+                    this.props.onInDb(true);
+                    this.setState({disableBtn: false});
                 });
             });
         };
@@ -91,7 +110,6 @@ class Summoner extends Component {
 
 componentDidMount() {
     this.props.getFindSummoner(this.findSummonerHandler);
-    console.log(this.props);
 };
 
 componentWillUnmount() {
@@ -100,7 +118,7 @@ componentWillUnmount() {
 
 
 shouldComponentUpdate() {
-    return !this.props.allLoaded;
+    return true;//!this.props.allLoaded;
 }
 
 componentDidUpdate() {
@@ -114,9 +132,20 @@ findSummonerHandler = (event) => {
     this.getAllInfo()
         .then(() => {
             this.props.history.replace(`/summoner/${this.props.summonerInfo.name}`);
-            console.log(this.props)
+            
+        })
+        .then(() => {
+            return axios.get(`http://localhost:1234/summoner/check/${this.props.summonerInfo.id}`)
+        })
+        .then(({ data }) => {
+            this.props.onInDb(data.isInDb);
+            console.log(this.props);
+            
+        })
+        .catch(err => {
+            console.log(err);
         });
-
+    
     event.preventDefault();
 }
 
@@ -213,9 +242,19 @@ render() {
                 matchesHistory={this.props.matchHistory}
                 scroll={this.onScrollLoadHandler}
                 analyzeSummoner={this.analyzeSummonerHandler}
+                isInDb={this.props.isInDb}
+                showBackdrop={this.showBackdropHandler}
+                disableBtn={this.state.disableBtn}
             /> : null}
             {this.props.recentGames ? <RecentGames recentGames={this.props.recentGames} /> : null}
             {this.props.setLoading ? <Loading /> : null}
+            {this.state.showBackdrop ? 
+                <Backdrop hideBackdrop={this.hideBackdropHandler}>
+                    <Popup>
+                        Sorry, this feature isn't available at the moment
+                    </Popup>
+                </Backdrop> : 
+                null}
         </Fragment>
     );
 }
@@ -232,7 +271,8 @@ const mapStateToProps = ({ summoner, search }) => {
         setLoading: summoner.setLoading,
         numberOfMatches: summoner.numberOfMatches,
         recentGames: summoner.recentGames,
-        allLoaded: summoner.allLoaded
+        allLoaded: summoner.allLoaded,
+        isInDb: summoner.isInDb
     };
 }
 
@@ -271,6 +311,12 @@ const mapDispatchToProps = (dispatch) => {
         onReset: () => dispatch(
             {
                 type: 'RESET'
+            }
+        ),
+        onInDb: (isInDb) => dispatch(
+            {
+                type: 'SET_IN_DB',
+                payload: isInDb 
             }
         )
     };

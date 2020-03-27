@@ -13,4 +13,6 @@ router.post('/summonerInfo/:summonerName', summonerController.insertSummonerData
 
 router.post('/gameStats/:summonerName', summonerController.insertGameStats);
 
+router.get('/check/:summonerId', summonerController.isInDb);
+
 module.exports = router;

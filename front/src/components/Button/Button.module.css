@@ -6,6 +6,10 @@
     cursor: pointer;
 }
 
+.Button:disabled {
+    cursor: not-allowed;
+}
+
 .Button:focus {
     outline: none;
     box-shadow: 0 .5rem 1rem rgba(0, 0, 0, 0.192);
