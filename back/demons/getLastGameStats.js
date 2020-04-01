@@ -1,5 +1,5 @@
 const axios = require('axios');
-const updateInterval = 3600000;
+const updateInterval = 20000;
 const dbPool = require('../db/dbPool');
 
 const getGameStats = async (link, summonerId) => {
@@ -23,55 +23,58 @@ const getGameStats = async (link, summonerId) => {
             gameDuration: Math.floor(data.gameDuration / 60),
         };
     } catch (err) {
-        console.log(err);
+
+        console.log(err.response.statusText);
     };
 };
 
+const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+
 const gameStatsDemon = (endpoints) => {
+    
     const timeBetweenUpdates = 1 / 6; //in minutes
     const matchesCount = 3;
     const linkMatches = endpoints.matchPoint.replace('numberOfEntries', matchesCount);
     const linkGameStats = endpoints.matchInfoPoint;
-    const query = `SELECT accountId, id FROM summoner WHERE CURRENT_TIMESTAMP - statsUpdated  > ${timeBetweenUpdates} * '1 minute'::interval`
+    const query = `SELECT accountId, id, name FROM summoner WHERE CURRENT_TIMESTAMP - statsUpdated  > ${timeBetweenUpdates} * '1 minute'::interval`
     const interval = setInterval(() => {
+        
         dbPool.query(query, (err, response) => {
             if (err) {
                 console.log(err);
                 return;
             }
 
-
             const toUpdate = response.rows.map(row => {
+                console.log(row.name);
                 return {
                     accountId: row.accountid,
-                    id: row.id
+                    id: row.id,
+                    name: row.name
                 };
             });
 
+            const updateStats = async () => {
+                for (summoner of toUpdate) {
+                    try {
+                        console.log(`Right now ${summoner.name} is being updated`);
+                        const {data} = await axios.get(linkMatches.replace('accountId', summoner.accountId))
+    
 
-            console.log(toUpdate);
-            for (summoner of toUpdate) {
-                axios.get(linkMatches.replace('accountId', summoner.accountId))
-                    .then(({ data }) => {
                         const gameStatsPromises = data.matches.map(match => {
                             return getGameStats(linkGameStats.replace('gameId', match.gameId), summoner.id);
                         });
-                        const gameStats = Promise.all(gameStatsPromises);
-                        return (gameStats);
-                    })
-                    .then(gameStats => {
-                        axios.post('http://localhost:1234/summoner/gameStats/:summonerName', {gameStats: gameStats, summonerId: summoner.id})
-                        .catch(err => {
-                            console.log(err);
-                        });
-                    })
-                    .catch(err => {
-                        console.log(err);
-                    });
-            }
+                        const gameStats = await Promise.all(gameStatsPromises);
+                        await axios.post('http://localhost:1234/summoner/gameStats/:summonerName', { gameStats: gameStats, summonerId: summoner.id })
+                    } catch (err) {
+                        console.log(err.response.statusText);
+                    }
+                    await sleep(1000);
+                };
+            };
+            updateStats();
         });
     }, updateInterval);
-
     return interval;
 };
 

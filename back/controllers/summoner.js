@@ -39,7 +39,8 @@ const constructGameStatsQuery = (games, summonerId) => {
                 ${game.wardsPlaced},
                 '${game.lane}',
                 ${game.gameDuration},
-                '${summonerId}'
+                '${summonerId}',
+                ${game.gameCreation}
             )`
         );
     }).join(', ');
@@ -57,7 +58,8 @@ const constructGameStatsQuery = (games, summonerId) => {
         wardsPlaced,
         lane,
         gameDuration,
-        summonerId)
+        summonerId,
+        gameCreation)
     VALUES ${gameStatsForm} RETURNING lane`;
 
     return gameStatsQuery;
@@ -120,15 +122,17 @@ exports.insertSummonerData = (req, res) => {
 exports.insertGameStats = (req, res) => {
     const gameStats = req.body.gameStats;
     const summonerId = req.body.summonerId;
-    const neededQueue = [400, 440]; //only normal 5v5 and ranked
+    //400 - 5v5 Draft Pick games, 420 - 5v5 Ranked Solo games, 440 - 5v5 Ranked Flex games
+    const neededQueue = [400, 420, 440]; 
 
     const gamesToInsert = new Promise((resolve, reject) => {
-        dbPool.query(`SELECT id FROM gameStats 
-        WHERE summonerId = '${summonerId}' LIMIT ${numberOfGames}`,
+        dbPool.query(`SELECT id, gameCreation FROM gameStats 
+        WHERE summonerId = '${summonerId}' ORDER BY gameCreation DESC LIMIT ${numberOfGames}`,
             (err, response) => {
                 if (err) {
                     reject(err);
                 } else {
+                    console.log(response.rows);
                     const gamesFromDb = response.rows.map(row => row.id);
                     resolve(gameStats.filter(game => (!gamesFromDb.includes(game.gameId) && neededQueue.includes(game.queueId))));
                 }

@@ -11,5 +11,6 @@ CREATE TABLE gameStats(
     gameDuration INT NOT NULL,
     summonerId TEXT NOT NULL,
     CONSTRAINT oneGame PRIMARY KEY (id, summonerId),
-    FOREIGN KEY(summonerId) REFERENCES summoner(id)
+    FOREIGN KEY(summonerId) REFERENCES summoner(id),
+    gameCreation BIGINT NOT NULL UNIQUE
 );

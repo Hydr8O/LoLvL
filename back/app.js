@@ -17,7 +17,7 @@ app.use('/summoner', summonerRoutes);
 
 app.get('/match/:gameId', (req, res) => {
     const gameId = req.params.gameId;
-    axios.get(endpoints.matchInfoPoint.replace('gameId', gameId))
+    axios.get(app.locals.endpoints.matchInfoPoint.replace('gameId', gameId))
         .then(({ data }) => {
             res.json(data);
         });
@@ -26,7 +26,7 @@ app.get('/match/:gameId', (req, res) => {
 app.get('/matches/:accountId', (req, res) => {
     const accountId = req.params.accountId;
     const numberOfEntries = req.query.numberOfEntries;
-    axios.get(endpoints.matchPoint.replace('accountId', accountId).replace('numberOfEntries', numberOfEntries))
+    axios.get(app.locals.endpoints.matchPoint.replace('accountId', accountId).replace('numberOfEntries', numberOfEntries))
         .then(({ data }) => {
             res.json(data);
         });
@@ -37,8 +37,16 @@ app.get('/matches/:accountId', (req, res) => {
 app.listen(1234, () => {
     versionDemon(app)
     .then(interval => {
+        console.log('Version demon is up');
         versionDemonInterval = interval;
-        gameStatsDemonInterval = gameStatsDemon(app.locals.endpoints);
-    });
+        return(gameStatsDemon(app.locals.endpoints));
+    })
+    .then(interval => {
+        console.log('Game stats demon is up');
+        gameStatsDemonInterval = interval;
+    })
+    .catch(err => {
+        console.log(err);
+    })
     console.log('server started');
 });

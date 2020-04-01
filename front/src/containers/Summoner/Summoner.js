@@ -67,7 +67,8 @@ class Summoner extends Component {
                             wardsPlaced: game.participantData.stats.wardsPlaced,
                             gameDuration: game.gameDuration,
                             lane: game.lane,
-                            queueId: game.queueId
+                            queueId: game.queueId,
+                            gameCreation: game.gameCreation
                         }
                     }),
                     summonerId: this.props.summonerInfo.id
@@ -94,7 +95,8 @@ class Summoner extends Component {
                             wardsPlaced: game.participantData.stats.wardsPlaced,
                             gameDuration: game.gameDuration,
                             lane: game.lane,
-                            queueId: game.queueId
+                            queueId: game.queueId,
+                            gameCreation: game.gameCreation
                         }
                     }),
                     summonerId: this.props.summonerInfo.id,
@@ -216,9 +218,11 @@ async matchInfo(match) {
     const summonerInfo = data.participants[participantId - 1];
     idToName(summonerInfo, ITEMS, this.props.mappedNames.mappedItemNames, true);
     idToName(summonerInfo, 'championId', this.props.mappedNames.mappedChampNames);
+    console.log(data);
     return {
         queueId: data.queueId,
         gameId: match.gameId,
+        gameCreation: data.gameCreation,
         participantData: data.participants[participantId - 1],
         lane: match.lane,
         gameDuration: Math.floor(data.gameDuration / 60),
