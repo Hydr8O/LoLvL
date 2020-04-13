@@ -6,7 +6,6 @@ router.get('/summonerInfo/:summonerName', summonerController.getSummonerData);
 
 router.get('/rankInfo/:summonerId', summonerController.getRankData);
 
-
 router.get('/masteryInfo/:summonerId', summonerController.getMasteryData);
 
 router.post('/summonerInfo/:summonerName', summonerController.insertSummonerData);

@@ -1,29 +1,13 @@
 const axios = require('axios');
 const updateInterval = 20000;
 const dbPool = require('../db/dbPool');
+const extractGameStats = require('../utils/extractGameStats');
 
 const getGameStats = async (link, summonerId) => {
     try {
         const { data } = await axios.get(link);
-        const participantId = data.participantIdentities
-            .find(participant => participant.player.summonerId === summonerId).participantId;
-        const gameStats = data.participants[participantId - 1].stats;
-        const lane = data.participants[participantId - 1].timeline.lane;
-        return {
-            queueId: data.queueId,
-            gameId: data.gameId,
-            win: gameStats.win,
-            kills: gameStats.kills,
-            deaths: gameStats.deaths,
-            assists: gameStats.assists,
-            longestTimeSpentLiving: gameStats.longestTimeSpentLiving,
-            totalDamageDealt: gameStats.totalDamageDealt,
-            wardsPlaced: gameStats.wardsPlaced,
-            lane: lane,
-            gameDuration: Math.floor(data.gameDuration / 60),
-        };
+        return extractGameStats(data, summonerId)
     } catch (err) {
-
         console.log(err.response.statusText);
     };
 };
