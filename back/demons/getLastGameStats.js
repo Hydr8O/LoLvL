@@ -6,7 +6,7 @@ const extractGameStats = require('../utils/extractGameStats');
 const getGameStats = async (link, summonerId) => {
     try {
         const { data } = await axios.get(link);
-        return extractGameStats(data, summonerId)
+        return extractGameStats(data, summonerId, false)
     } catch (err) {
         console.log(err.response.statusText);
     };
@@ -49,7 +49,11 @@ const gameStatsDemon = (endpoints) => {
                             return getGameStats(linkGameStats.replace('gameId', match.gameId), summoner.id);
                         });
                         const gameStats = await Promise.all(gameStatsPromises);
-                        await axios.post('http://localhost:1234/summoner/gameStats/:summonerName', { gameStats: gameStats, summonerId: summoner.id })
+                        await axios.post('http://localhost:1234/summoner/gameStats/:summonerName', { 
+                            gameStats: gameStats, 
+                            summonerId: summoner.id,
+                            table: 'gameStats'
+                        });
                     } catch (err) {
                         console.log(err.response.statusText);
                     }

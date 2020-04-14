@@ -7,26 +7,26 @@ const insertSummonerMainData = (summonerInfo, res) => {
     dbPool.query(`INSERT INTO 
 summoner(id, name, puuid, accountId, level, revisionDate, profileIconId) 
 VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING name`,
-    [
-        summonerInfo.id,
-        summonerInfo.name,
-        summonerInfo.puuid,
-        summonerInfo.accountId,
-        summonerInfo.level,
-        new Date(summonerInfo.revisionDate).toISOString(),
-        summonerInfo.profileIconId
-    ], (err, response) => {
-        if (err) {
-            // console.log(err);
-            res.end('Error');
-        } else {
-            res.end(response.rows[0].name)
-        };
-    });
+        [
+            summonerInfo.id,
+            summonerInfo.name,
+            summonerInfo.puuid,
+            summonerInfo.accountId,
+            summonerInfo.level,
+            new Date(summonerInfo.revisionDate).toISOString(),
+            summonerInfo.profileIconId
+        ], (err, response) => {
+            if (err) {
+                // console.log(err);
+                res.end('Error');
+            } else {
+                res.end(response.rows[0].name)
+            };
+        });
 };
 
-const constructGameStatsQuery = (games, summonerId) => {
-    const gameStatsForm = games.map(game => {
+const constructGameStatsQuery = (games, summonerId, table) => {
+    const gameStatsForm = games.map((game) => {
         return (
             `(
                 ${game.gameId},
@@ -44,10 +44,10 @@ const constructGameStatsQuery = (games, summonerId) => {
             )`
         );
     }).join(', ');
-    
+
     const gameStatsQuery =
         `INSERT INTO
-    gameStats(
+    ${table}(
         id,
         win,
         kills,
@@ -122,19 +122,25 @@ exports.insertSummonerData = (req, res) => {
 exports.insertGameStats = (req, res) => {
     const gameStats = req.body.gameStats;
     const summonerId = req.body.summonerId;
+
+    let table = 'gameStats';
+    if (req.body.table) {
+        table = req.body.table;
+    }
     //400 - 5v5 Draft Pick games, 420 - 5v5 Ranked Solo games, 440 - 5v5 Ranked Flex games
-    const neededQueue = [400, 420, 440]; 
+    const neededQueue = [400, 420, 440];
 
     const gamesToInsert = new Promise((resolve, reject) => {
-        dbPool.query(`SELECT id, gameCreation FROM gameStats 
+        dbPool.query(`SELECT id, gameCreation FROM ${table} 
         WHERE summonerId = '${summonerId}' ORDER BY gameCreation DESC LIMIT ${numberOfGames}`,
             (err, response) => {
                 if (err) {
                     reject(err);
                 } else {
-                    console.log(response.rows);
                     const gamesFromDb = response.rows.map(row => row.id);
-                    resolve(gameStats.filter(game => (!gamesFromDb.includes(game.gameId) && neededQueue.includes(game.queueId))));
+                    resolve(gameStats.filter(game => {
+                        return (!gamesFromDb.includes(game.gameId) && neededQueue.includes(game.queueId))
+                    }));
                 }
             }
         );
@@ -147,11 +153,12 @@ exports.insertGameStats = (req, res) => {
             return;
         };
 
-        const gameStatsQuery = constructGameStatsQuery(games, summonerId);
-    
+        const gameStatsQuery = constructGameStatsQuery(games, summonerId, table);
+
         console.log(gameStatsQuery)
         insertGameStatsData(gameStatsQuery, res);
-    });
+    })
+        .catch(err => console.log(err))
 };
 
 exports.isInDb = (req, res) => {
@@ -162,7 +169,7 @@ exports.isInDb = (req, res) => {
             console.log(err);
             return;
         }
-        
+
         res.json({
             isInDb: response.rows.length === 0 ? false : true
         });

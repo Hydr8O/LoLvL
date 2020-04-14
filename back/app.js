@@ -46,7 +46,7 @@ app.get('/test', (req, res) => {
         try {
             ////////////////////////
             //Get data about summoners in tier, rank and queue type
-            let { data } = await axios.get('https://ru.api.riotgames.com/lol/league/v4/entries/RANKED_SOLO_5x5/DIAMOND/I?page=1&api_key=RGAPI-1ed71392-d9dc-44da-9c4b-d180fd34d005');
+            let { data } = await axios.get('https://ru.api.riotgames.com/lol/league/v4/entries/RANKED_SOLO_5x5/DIAMOND/I?page=1&api_key=RGAPI-91751316-9d17-4dbe-a8db-8907483ff45a');
             ////////////////////////
             //Extract 10 summoners ids
             const ids = extractSummonerIds(data);
@@ -61,9 +61,16 @@ app.get('/test', (req, res) => {
             const gameStatsProm = gameIdToSummoner.map(gameId => {
                 return { gameStats: axios.get(`http://localhost:1234/match/${gameId.gameId}`), summonerId: gameId.summonerId };
             });
-            const allGameStats = await contructAllGameStats(gameStatsProm);
-            
-            console.log(allGameStats);
+            const allGameStats = await contructAllGameStats(gameStatsProm, ids);
+
+            for (entry of allGameStats) {
+                await axios.post('http://localhost:1234/summoner/gameStats/:summonerName', {
+                    gameStats: entry.gameStats,
+                    summonerId: entry.summonerId,
+                    table: 'dataForQuests'
+                });
+            }
+
             res.send('Test');
         } catch (err) {
             console.log(err);
@@ -80,12 +87,12 @@ app.listen(1234, () => {
         .then(interval => {
             console.log('Version demon is up');
             versionDemonInterval = interval;
-            // return(gameStatsDemon(app.locals.endpoints));
+            return(gameStatsDemon(app.locals.endpoints));
         })
-        // .then(interval => {
-        //     console.log('Game stats demon is up');
-        //     gameStatsDemonInterval = interval;
-        // })
+        .then(interval => {
+            console.log('Game stats demon is up');
+            gameStatsDemonInterval = interval;
+        })
         .catch(err => {
             console.log(err);
         })
@@ -93,25 +100,34 @@ app.listen(1234, () => {
 });
 ////////////////
 //Helper Functions REMEMBER TO PUT INTO SEPERATE FILES LATER!!!!
-const extractSummonerIds = (data, numberOfEntries=10) => {
+const extractSummonerIds = (data, numberOfEntries = 10) => {
     return data.map(entry => entry.summonerId)
         .slice(0, numberOfEntries);
 };
 
-const contructAllGameStats = async (gameStatsProm) => {
+const contructAllGameStats = async (gameStatsProm, ids) => {
     const allGameStats = [];
-    for (entry of gameStatsProm) {
-        let oneGame;
-        const { data } = await entry.gameStats;
-        oneGame = extractGameStats(data, entry.summonerId);
-        allGameStats.push(oneGame);
+    for (id of ids) {
+        const oneSummonerGames = gameStatsProm.filter(stats => {
+            return id === stats.summonerId
+        });
+        let oneGame = [];
+        for (entry of oneSummonerGames) {
+            const { data } = await entry.gameStats;
+            oneGame.push(extractGameStats(data, entry.summonerId, true));
+            
+        };
+        allGameStats.push({summonerId: id, gameStats: oneGame});
     };
     return allGameStats;
 };
 
+
+
+
 const getAccIds = async (ids) => {
     const summonerInfoProm = ids.map(id => {
-        return axios.get(`https://ru.api.riotgames.com/lol/summoner/v4/summoners/${id}?api_key=RGAPI-1ed71392-d9dc-44da-9c4b-d180fd34d005`)
+        return axios.get(`https://ru.api.riotgames.com/lol/summoner/v4/summoners/${id}?api_key=RGAPI-91751316-9d17-4dbe-a8db-8907483ff45a`)
     })
     summonerInfo = await Promise.all(summonerInfoProm);
     return summonerInfo.map(summoner => summoner.data.accountId);
@@ -121,7 +137,7 @@ const getGameIds = async (accIds, ids) => {
     const matchesProm = accIds.map((id, index) => {
         return axios.get(`http://localhost:1234/matches/${id}?numberOfEntries=1`);
     });
-    const matches = await Promise.all(matchesProm);  
+    const matches = await Promise.all(matchesProm);
     return matches.map(({ data }, index) => {
         return data.matches.map(summonerMatch => {
             return { gameId: summonerMatch.gameId, summonerId: ids[index] };
