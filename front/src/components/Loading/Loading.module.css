@@ -9,6 +9,12 @@
     transform: translate(-50%, -50%);
 }
 
+.SmallLoading {
+    display: flex;
+    justify-content: space-around;
+    width: 4rem;
+}
+
 .Circle {
     border-radius: 50%;
     animation-name: load;
@@ -19,6 +25,11 @@
     width: 2rem;
     background-color: rgb(133, 128, 128);
     
+}
+
+.Small {
+    height: .7rem;
+    width: .7rem;
 }
 
 .First {

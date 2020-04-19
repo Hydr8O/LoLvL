@@ -1,9 +1,16 @@
 .Button {
     padding: 1rem 2rem;
     border-radius: 6px;
-    display: inline-block;
-    
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
     cursor: pointer;
+}
+
+.Link:visited,
+.Link:link {
+    color: var(--color-grey-black);
 }
 
 .Button:disabled {

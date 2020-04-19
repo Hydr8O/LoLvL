@@ -3,7 +3,6 @@ import classes from './SummonerRank.module.css';
 import RankCard from './RankCard/RankCard';
 
 const SummonerRank = ({rankStats}) => {
-    
     return (
         <div className={classes.SummonerRank}>
             <RankCard 

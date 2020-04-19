@@ -1,9 +1,18 @@
-import React from 'react';
+import React, {useState, useEffect} from 'react';
 import classes from './SummonerProfile.module.css';
 import Button from '../../Button/Button';
 import MainChampion from './MainChampion/MainChampion';
+import Loading from '../../Loading/Loading';
+import {withRouter} from 'react-router-dom';
+
 
 const SummonerProfile = (props) => {
+    const [isLoading, setIsLoading] = useState(false);
+
+    const setLoadingHandler = () => {
+        setIsLoading(true);
+    }
+    console.log(props)
     return (
         <div className={classes.SummonerProfile}>
             <div className={classes.Profile}>
@@ -18,13 +27,17 @@ const SummonerProfile = (props) => {
                     type='Primary' 
                     align='Center' 
                     disabled={props.disableBtn}
-                    onClick={props.analyzeSummoner}>
-                        Analyze Summoner Info
+                    onClick={[props.analyzeSummoner, setLoadingHandler]}>
+                        {isLoading ? <Loading small={true}/> :
+                        "Analyze Summoner"}
                     </Button> : 
                     <Button 
+                    to={`/summoner/${props.name}/quests`}
                     type='Primary' 
                     align='Center' 
-                    onClick={props.showBackdrop}>
+                    disabled={props.disableBtn}
+                    link={true}
+                    >
                         Quests
                     </Button>
                 }
@@ -34,4 +47,4 @@ const SummonerProfile = (props) => {
     );
 }
 
-export default SummonerProfile;
+export default withRouter(SummonerProfile);

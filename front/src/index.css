@@ -6,6 +6,12 @@
   box-sizing: inherit;
 }
 
+*:link,
+*:visited {
+  text-decoration: none;
+}
+
+
 :root {
   --color-primary: #9AC2C9;
   --color-blue: #4287f5;

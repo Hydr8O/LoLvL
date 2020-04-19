@@ -2,11 +2,12 @@ import React, { Component, Fragment } from 'react';
 import SummonerStats from '../../components/SummonerStats/SummonerStats';
 import RecentGames from '../../components/RecentGames/RecentGames';
 import { connect } from 'react-redux';
-import { withRouter } from 'react-router-dom';
+import { withRouter, Route, Switch } from 'react-router-dom';
 import Loading from '../../components/Loading/Loading';
 import Backdrop from '../../components/Backdrop/Backdrop';
 import Popup from '../../components/Popup/Popup';
 import { idToName } from '../../utils/mapNames';
+import Quests from '../../components/Quests/Quests';
 import axios from 'axios';
 
 const ITEMS = ["item0", "item1", "item2", "item3", "item4", "item5", "item6"];
@@ -119,9 +120,7 @@ componentWillUnmount() {
 }
 
 
-shouldComponentUpdate() {
-    return true;//!this.props.allLoaded;
-}
+
 
 componentDidUpdate() {
     console.log('updated');
@@ -133,7 +132,7 @@ findSummonerHandler = (event) => {
     this.props.onLoading({ allLoaded: false, setLoading: true, searchCompleted: false, recentGames: undefined });
     this.getAllInfo()
         .then(() => {
-            this.props.history.replace(`/summoner/${this.props.summonerInfo.name}`);
+            this.props.history.push(`/summoner/${this.props.summonerInfo.name}`);
             
         })
         .then(() => {
@@ -171,7 +170,10 @@ async getAllInfo() {
     const results = await Promise.all([mastery, rank, matchesBase]);
     this.props.onOtherInfo(
         {
-            rankInfo: { soloRank: results[1][0], flexRank: results[1][1] },
+            rankInfo: { 
+                soloRank: results[1].find(entry => entry.queueType === 'RANKED_SOLO_5x5'), 
+                flexRank: results[1].find(entry => entry.queueType === 'RANKED_FLEX_SR') 
+            },
             masteryInfo: results[0],
             searchCompleted: true,
             setLoading: false,
@@ -232,9 +234,8 @@ async matchInfo(match) {
 
 
 render() {
-    return (
-        <Fragment>
-            {this.props.searchCompleted ? <SummonerStats
+    const toRender = [
+        this.props.searchCompleted ? <SummonerStats
                 searchCompleted={this.props.searchCompleted}
                 name={this.props.summonerInfo.name}
                 level={this.props.summonerInfo.level}
@@ -248,9 +249,24 @@ render() {
                 analyzeSummoner={this.analyzeSummonerHandler}
                 isInDb={this.props.isInDb}
                 showBackdrop={this.showBackdropHandler}
-                disableBtn={this.state.disableBtn}
-            /> : null}
-            {this.props.recentGames ? <RecentGames recentGames={this.props.recentGames} /> : null}
+                disableBtn={this.state.disableBtn} 
+                key='SummonerStats'
+        />: null,
+        this.props.recentGames ? <RecentGames 
+            recentGames={this.props.recentGames} 
+            allLoaded = {this.props.allLoaded}
+            key="RecentGames"
+        />:
+        null
+    ]
+
+    return (
+        <Fragment>
+            <Switch>
+            <Route path='/summoner/:summonerId/quests' component={Quests}/>
+            <Route path='/summoner/:summonerId' render={() => toRender}/>
+            </Switch>
+            
             {this.props.setLoading ? <Loading /> : null}
             {this.state.showBackdrop ? 
                 <Backdrop hideBackdrop={this.hideBackdropHandler}>

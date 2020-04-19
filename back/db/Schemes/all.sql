@@ -23,7 +23,7 @@ CREATE TABLE gameStats(
     summonerId TEXT NOT NULL,
     CONSTRAINT oneGame PRIMARY KEY (id, summonerId),
     FOREIGN KEY(summonerId) REFERENCES summoner(id),
-    gameCreation BIGINT NOT NULL UNIQUE
+    gameCreation BIGINT NOT NULL
 );
 
 CREATE TABLE dataForQuests(
