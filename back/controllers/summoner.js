@@ -25,27 +25,71 @@ VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING name`,
         });
 };
 
-const constructGameStatsQuery = (games, summonerId, table) => {
-    const gameStatsForm = games.map((game) => {
-        return (
-            `(
-                ${game.gameId},
-                '${game.win}', 
-                ${game.kills}, 
-                ${game.deaths}, 
-                ${game.assists}, 
-                ${game.longestTimeSpentLiving},
-                ${game.totalDamageDealt},
-                ${game.wardsPlaced},
-                '${game.lane}',
-                ${game.gameDuration},
-                '${summonerId}',
-                ${game.gameCreation}
-            )`
-        );
-    }).join(', ');
+const constructGameStatsQuery = (games, summonerId, table, rank, tier) => {
+    let gameStatsForm;
+    let gameStatsQuery;
+    console.log(rank)
+    if (rank) {
+        gameStatsForm = games.map((game) => {
+            return (
+                `(
+                    ${game.gameId},
+                    '${game.win}', 
+                    ${game.kills}, 
+                    ${game.deaths}, 
+                    ${game.assists}, 
+                    ${game.longestTimeSpentLiving},
+                    ${game.totalDamageDealt},
+                    ${game.wardsPlaced},
+                    '${game.lane}',
+                    ${game.gameDuration},
+                    '${summonerId}',
+                    ${game.gameCreation},
+                    '${rank}',
+                    '${tier}'
+                )`
+            );
+        }).join(', ');
 
-    const gameStatsQuery =
+        gameStatsQuery =
+        `INSERT INTO
+    ${table}(
+        id,
+        win,
+        kills,
+        deaths,
+        assists,
+        longestTimeSpentLiving,
+        totalDamageDealt,
+        wardsPlaced,
+        lane,
+        gameDuration,
+        summonerId,
+        gameCreation,
+        rank,
+        tier)
+    VALUES ${gameStatsForm} RETURNING lane`;
+    } else {
+        gameStatsForm = games.map((game) => {
+            return (
+                `(
+                    ${game.gameId},
+                    '${game.win}', 
+                    ${game.kills}, 
+                    ${game.deaths}, 
+                    ${game.assists}, 
+                    ${game.longestTimeSpentLiving},
+                    ${game.totalDamageDealt},
+                    ${game.wardsPlaced},
+                    '${game.lane}',
+                    ${game.gameDuration},
+                    '${summonerId}',
+                    ${game.gameCreation}
+                )`
+            );
+        }).join(', ');
+
+        gameStatsQuery =
         `INSERT INTO
     ${table}(
         id,
@@ -61,6 +105,8 @@ const constructGameStatsQuery = (games, summonerId, table) => {
         summonerId,
         gameCreation)
     VALUES ${gameStatsForm} RETURNING lane`;
+    
+    }
 
     return gameStatsQuery;
 };
@@ -122,6 +168,8 @@ exports.insertSummonerData = (req, res) => {
 exports.insertGameStats = (req, res) => {
     const gameStats = req.body.gameStats;
     const summonerId = req.body.summonerId;
+    const rank = req.body.rank;
+    const tier = req.body.tier;
 
     let table = 'gameStats';
     if (req.body.table) {
@@ -153,7 +201,7 @@ exports.insertGameStats = (req, res) => {
             return;
         };
 
-        const gameStatsQuery = constructGameStatsQuery(games, summonerId, table);
+        const gameStatsQuery = constructGameStatsQuery(games, summonerId, table, rank, tier);
 
         console.log(gameStatsQuery)
         insertGameStatsData(gameStatsQuery, res);

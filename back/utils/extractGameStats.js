@@ -6,7 +6,6 @@ const extractGameStats = (data, summonerId, forStatistics) => {
     const gameStats = data.participants[participantId - 1].stats;
     const lane = data.participants[participantId - 1].timeline.lane;
     return {
-        gameStats: {
             queueId: data.queueId,
             gameId: data.gameId,
             win: gameStats.win,
@@ -21,7 +20,6 @@ const extractGameStats = (data, summonerId, forStatistics) => {
             gameDuration: Math.floor(data.gameDuration / 60),
             gameCreation: data.gameCreation,
             forStatistics: forStatistics
-        }
     }
 };
 

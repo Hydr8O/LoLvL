@@ -17,7 +17,7 @@ const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 const gameStatsDemon = (endpoints) => {
     
     const timeBetweenUpdates = 1 / 6; //in minutes
-    const matchesCount = 3;
+    const matchesCount = 10;
     const linkMatches = endpoints.matchPoint.replace('numberOfEntries', matchesCount);
     const linkGameStats = endpoints.matchInfoPoint;
     const query = `SELECT accountId, id, name FROM summoner WHERE CURRENT_TIMESTAMP - statsUpdated  > ${timeBetweenUpdates} * '1 minute'::interval`

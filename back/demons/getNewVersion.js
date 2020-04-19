@@ -1,7 +1,7 @@
 /////////////////////////////////////
 //Request for newest version of API
 const axios = require('axios');
-const initEndpoints = require('../endpoints');
+const {initEndpoints} = require('../endpoints');
 const updateVersionInterval = 86400000; //24 hours 86400000
 /////////////////////////////////////
 //Gets newest version and adds it to local starage app.locals.endpoints

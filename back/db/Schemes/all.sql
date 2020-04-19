@@ -39,6 +39,7 @@ CREATE TABLE dataForQuests(
     gameDuration INT NOT NULL,
     summonerId TEXT NOT NULL,
     gameCreation BIGINT NOT NULL UNIQUE,
+    rank VARCHAR(10) NOT NULL,
+    tier VARCHAR(2) NOT NULL,
     CONSTRAINT uniqueGame PRIMARY KEY (id, summonerId)
-    
 );

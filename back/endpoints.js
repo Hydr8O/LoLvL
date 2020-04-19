@@ -1,6 +1,6 @@
-const apiKey = 'RGAPI-91751316-9d17-4dbe-a8db-8907483ff45a';
+const apiKey = 'RGAPI-7dd8ae91-4815-4c56-8d5e-5e6547ad72d7';
 
-module.exports = initEndpoints = (newVersion) => {
+exports.initEndpoints = (newVersion) => {
     return {
         summonerPoint: `https://ru.api.riotgames.com/lol/summoner/v4/summoners/by-name/summonerName?api_key=${apiKey}`,
         rankPoint: `https://ru.api.riotgames.com/lol/league/v4/entries/by-summoner/summonerId?api_key=${apiKey}`,
@@ -13,3 +13,7 @@ module.exports = initEndpoints = (newVersion) => {
         matchInfoPoint: `https://ru.api.riotgames.com/lol/match/v4/matches/gameId?api_key=${apiKey}`
     };
 };
+
+exports.summonersByRank = (rank, tier) => {
+    return `https://ru.api.riotgames.com/lol/league/v4/entries/RANKED_SOLO_5x5/${rank}/${tier}?page=1&api_key=${apiKey}`;
+}
