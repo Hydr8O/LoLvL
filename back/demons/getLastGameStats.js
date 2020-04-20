@@ -20,7 +20,7 @@ const gameStatsDemon = (endpoints) => {
     const matchesCount = 10;
     const linkMatches = endpoints.matchPoint.replace('numberOfEntries', matchesCount);
     const linkGameStats = endpoints.matchInfoPoint;
-    const query = `SELECT accountId, id, name FROM summoner WHERE CURRENT_TIMESTAMP - statsUpdated  > ${timeBetweenUpdates} * '1 minute'::interval`
+    const query = `SELECT account_id, id, name FROM summoner WHERE CURRENT_TIMESTAMP - stats_updated  > ${timeBetweenUpdates} * '1 minute'::interval`
     const interval = setInterval(() => {
         
         dbPool.query(query, (err, response) => {
@@ -52,7 +52,7 @@ const gameStatsDemon = (endpoints) => {
                         await axios.post('http://localhost:1234/summoner/gameStats/:summonerName', { 
                             gameStats: gameStats, 
                             summonerId: summoner.id,
-                            table: 'gameStats'
+                            table: 'game_stats'
                         });
                     } catch (err) {
                         console.log(err.response.statusText);

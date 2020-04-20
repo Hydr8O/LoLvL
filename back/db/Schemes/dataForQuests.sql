@@ -1,4 +1,4 @@
-CREATE TABLE game_stats(
+CREATE TABLE data_for_quests(
     id INT NOT NULL,
     win BOOLEAN NOT NULL,
     kills INT NOT NULL,
@@ -7,10 +7,11 @@ CREATE TABLE game_stats(
     longest_time_spent_living INT NOT NULL,
     total_damage_dealt INT NOT NULL,
     wards_placed INT NOT NULL,
-    lane VARCHAR(10) DEFAULT 'Unknown',
+    lane VARCHAR(10) NOT NULL,
     game_duration INT NOT NULL,
     summoner_id TEXT NOT NULL,
-    CONSTRAINT one_game PRIMARY KEY (id, summoner_id),
-    FOREIGN KEY(summoner_id) REFERENCES summoner(id),
-    game_creation BIGINT NOT NULL
+    game_creation BIGINT NOT NULL UNIQUE,
+    rank VARCHAR(10) NOT NULL,
+    tier VARCHAR(2) NOT NULL,
+    CONSTRAINT unique_game PRIMARY KEY (id, summoner_id)
 );

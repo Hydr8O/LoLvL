@@ -116,6 +116,7 @@ componentDidMount() {
 };
 
 componentWillUnmount() {
+    console.log("Unmounted");
     this.props.onReset();
 }
 
@@ -263,7 +264,7 @@ render() {
     return (
         <Fragment>
             <Switch>
-            <Route path='/summoner/:summonerId/quests' component={Quests}/>
+            <Route path='/summoner/:summonerId/quests' render={() => <Quests id={this.props.summonerInfo.id}/>}/>
             <Route path='/summoner/:summonerId' render={() => toRender}/>
             </Switch>
             

@@ -5,7 +5,7 @@ const numberOfGames = 10;
 
 const insertSummonerMainData = (summonerInfo, res) => {
     dbPool.query(`INSERT INTO 
-summoner(id, name, puuid, accountId, level, revisionDate, profileIconId) 
+summoner(id, name, puuid, account_id, level, revision_date, profile_icon_id) 
 VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING name`,
         [
             summonerInfo.id,
@@ -28,7 +28,7 @@ VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING name`,
 const constructGameStatsQuery = (games, summonerId, table, rank, tier) => {
     let gameStatsForm;
     let gameStatsQuery;
-    console.log(rank)
+  
     if (rank) {
         gameStatsForm = games.map((game) => {
             return (
@@ -59,13 +59,13 @@ const constructGameStatsQuery = (games, summonerId, table, rank, tier) => {
         kills,
         deaths,
         assists,
-        longestTimeSpentLiving,
-        totalDamageDealt,
-        wardsPlaced,
+        longest_time_spent_living,
+        total_damage_dealt,
+        wards_placed,
         lane,
-        gameDuration,
-        summonerId,
-        gameCreation,
+        game_duration,
+        summoner_id,
+        game_creation,
         rank,
         tier)
     VALUES ${gameStatsForm} RETURNING lane`;
@@ -97,13 +97,13 @@ const constructGameStatsQuery = (games, summonerId, table, rank, tier) => {
         kills,
         deaths,
         assists,
-        longestTimeSpentLiving,
-        totalDamageDealt,
-        wardsPlaced,
+        longest_time_spent_living,
+        total_damage_dealt,
+        wards_placed,
         lane,
-        gameDuration,
-        summonerId,
-        gameCreation)
+        game_duration,
+        summoner_id,
+        game_creation)
     VALUES ${gameStatsForm} RETURNING lane`;
     
     }
@@ -122,6 +122,31 @@ const insertGameStatsData = (gameStatsQuery, res) => {
         };
     });
 };
+
+const createNewQuests = (id) => {
+    questData = {
+        typeId: 1,
+        summonerId: id,
+        currentProgress: 0
+    }
+    
+    dbPool.query(`INSERT INTO 
+    quest(
+        type_id, 
+        summoner_id, 
+        current_progress
+        ) 
+    VALUES (
+        ${questData.typeId},
+        '${questData.summonerId}',
+        ${questData.currentProgress}
+    )`, (err, response) => {
+        if (err) {
+            return console.log(err);
+        }
+    });
+    return questData;
+}
 
 /////////////////////////////////////////
 //Requests to riot API
@@ -171,7 +196,7 @@ exports.insertGameStats = (req, res) => {
     const rank = req.body.rank;
     const tier = req.body.tier;
 
-    let table = 'gameStats';
+    let table = 'game_stats';
     if (req.body.table) {
         table = req.body.table;
     }
@@ -179,8 +204,8 @@ exports.insertGameStats = (req, res) => {
     const neededQueue = [400, 420, 440];
 
     const gamesToInsert = new Promise((resolve, reject) => {
-        dbPool.query(`SELECT id, gameCreation FROM ${table} 
-        WHERE summonerId = '${summonerId}' ORDER BY gameCreation DESC LIMIT ${numberOfGames}`,
+        dbPool.query(`SELECT id, game_creation FROM ${table} 
+        WHERE summoner_id = '${summonerId}' ORDER BY game_creation DESC LIMIT ${numberOfGames}`,
             (err, response) => {
                 if (err) {
                     reject(err);
@@ -222,4 +247,25 @@ exports.isInDb = (req, res) => {
             isInDb: response.rows.length === 0 ? false : true
         });
     });
+};
+
+exports.loadQuests = (req, res) => {
+    const id = req.params.summonerId;
+    dbPool.query(`SELECT * FROM quest JOIN quest_type ON quest.type_id = quest_type.id WHERE summoner_id = '${id}'`, (err, response) => {
+        if (err) {
+            return console.log(err);
+        }
+
+        const result = response.rows;
+        let data;
+        if (result.length === 0) {
+            data = createNewQuests(id);
+        } else {
+            data = {id, name:'THD'}
+            
+        }
+        res.json(data);
+    })
+    
+    console.log(id);
 };

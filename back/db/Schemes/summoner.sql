@@ -2,9 +2,9 @@ CREATE TABLE summoner(
     id TEXT UNIQUE NOT NULL PRIMARY KEY,
     name VARCHAR(30) UNIQUE NOT NULL,
     puuid TEXT UNIQUE NOT NULL,
-    accountId TEXT UNIQUE NOT NULL,
+    account_id TEXT UNIQUE NOT NULL,
     level INT NOT NULL,
-    revisionDate TIMESTAMP NOT NULL,
-    profileIconId INT NOT NULL,
-    statsUpdated TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    revision_date TIMESTAMP NOT NULL,
+    profile_icon_id INT NOT NULL,
+    stats_updated TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
