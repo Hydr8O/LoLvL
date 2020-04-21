@@ -1,4 +1,4 @@
-const apiKey = 'RGAPI-bad8e7ca-c1a2-4ddb-b2f3-be0b9cf7c957';
+const apiKey = 'RGAPI-7d024e73-0a32-486f-a036-f46e43111602';
 
 exports.initEndpoints = (newVersion) => {
     return {
@@ -10,7 +10,8 @@ exports.initEndpoints = (newVersion) => {
         spellPoint: `http://ddragon.leagueoflegends.com/cdn/${newVersion}/data/en_US/summoner.json`,
         itemPoint: `http://ddragon.leagueoflegends.com/cdn/${newVersion}/data/en_US/item.json`,
         matchPoint: `https://ru.api.riotgames.com/lol/match/v4/matchlists/by-account/accountId?api_key=${apiKey}&endIndex=numberOfEntries`,
-        matchInfoPoint: `https://ru.api.riotgames.com/lol/match/v4/matches/gameId?api_key=${apiKey}`
+        matchInfoPoint: `https://ru.api.riotgames.com/lol/match/v4/matches/gameId?api_key=${apiKey}`,
+        summonerByIdPoint: `https://ru.api.riotgames.com/lol/summoner/v4/summoners/summonerId?api_key=${apiKey}`
     };
 };
 

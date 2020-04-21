@@ -29,9 +29,9 @@ const contructAllGameStats = async (gameStatsProm, ids) => {
 
 
 
-const getAccIds = async (ids) => {
+const getAccIds = async (ids, req) => {
     const summonerInfoProm = ids.map(id => {
-        return axios.get(`https://ru.api.riotgames.com/lol/summoner/v4/summoners/${id}?api_key=RGAPI-bad8e7ca-c1a2-4ddb-b2f3-be0b9cf7c957`)
+        return axios.get(req.locals.endpoints.summonerByIdPoint.replace('summonerId', id));
     })
     summonerInfo = await Promise.all(summonerInfoProm);
     return summonerInfo.map(summoner => summoner.data.accountId);
@@ -61,7 +61,7 @@ const getDataForQuests = (req, res) => {
             const ids = extractSummonerIds(data);
             ////////////////////////
             //Get summoners' account ids
-            const accIds = await getAccIds(ids);
+            const accIds = await getAccIds(ids, req);
             ////////////////////////
             //Get gameIds
             const gameIdToSummoner = await getGameIds(accIds, ids);

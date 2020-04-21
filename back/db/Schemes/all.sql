@@ -47,13 +47,14 @@ CREATE TABLE data_for_quests(
 CREATE TABLE quest_type(
     id SERIAL NOT NULL PRIMARY KEY,
     description TEXT NOT NULL,
-    quest_goal INT NOT NULL
+    quest_goal INT NOT NULL,
+    quest_img VARCHAR(10) NOT NULL
 );
 
 CREATE TABLE quest(
     id SERIAL NOT NULL PRIMARY KEY,
     type_id INT NOT NULL,
-    summoner_id TEXT UNIQUE NOT NULL,
+    summoner_id TEXT NOT NULL,
     current_progress INT DEFAULT 0,
     FOREIGN KEY(summoner_id) REFERENCES summoner(id), 
     FOREIGN KEY(type_id) REFERENCES quest_type(id)

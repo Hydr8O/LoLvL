@@ -1,5 +1,4 @@
-const axios = require('axios');
-const dbPool = require('../db/dbPool');
+const dbPool = require('../../db/dbPool');
 const numberOfGames = 10;
 
 
@@ -123,64 +122,6 @@ const insertGameStatsData = (gameStatsQuery, res) => {
     });
 };
 
-const createNewQuests = (id) => {
-    questData = {
-        typeId: 1,
-        summonerId: id,
-        currentProgress: 0
-    }
-    
-    dbPool.query(`INSERT INTO 
-    quest(
-        type_id, 
-        summoner_id, 
-        current_progress
-        ) 
-    VALUES (
-        ${questData.typeId},
-        '${questData.summonerId}',
-        ${questData.currentProgress}
-    )`, (err, response) => {
-        if (err) {
-            return console.log(err);
-        }
-    });
-    return questData;
-}
-
-/////////////////////////////////////////
-//Requests to riot API
-exports.getSummonerData = (req, res) => {
-    const summonerName = req.params.summonerName;
-    console.log(encodeURI(req.app.locals.endpoints.summonerPoint.replace('summonerName', summonerName)));
-    axios.get(encodeURI(req.app.locals.endpoints.summonerPoint.replace('summonerName', summonerName)))
-        .then(({ data }) => {
-            res.json(data);
-        })
-        .catch(err => {
-            console.log(`${err}`);
-        });
-};
-
-exports.getRankData = (req, res) => {
-    const summonerId = req.params.summonerId;
-    axios.get(req.app.locals.endpoints.rankPoint.replace('summonerId', summonerId))
-        .then(({ data }) => {
-            res.json(data);
-        }).catch(err => {
-            console.log(err.response.status);
-        });
-};
-
-exports.getMasteryData = (req, res) => {
-    const summonerId = req.params.summonerId;
-    axios.get(req.app.locals.endpoints.championMasteryPoint.replace('summonerId', summonerId))
-        .then(({ data }) => {
-            res.json(data);
-        }).catch(err => {
-            console.log(err.response.status);
-        });
-};
 
 
 ///////////////////////////////////////////
@@ -247,25 +188,4 @@ exports.isInDb = (req, res) => {
             isInDb: response.rows.length === 0 ? false : true
         });
     });
-};
-
-exports.loadQuests = (req, res) => {
-    const id = req.params.summonerId;
-    dbPool.query(`SELECT * FROM quest JOIN quest_type ON quest.type_id = quest_type.id WHERE summoner_id = '${id}'`, (err, response) => {
-        if (err) {
-            return console.log(err);
-        }
-
-        const result = response.rows;
-        let data;
-        if (result.length === 0) {
-            data = createNewQuests(id);
-        } else {
-            data = {id, name:'THD'}
-            
-        }
-        res.json(data);
-    })
-    
-    console.log(id);
 };

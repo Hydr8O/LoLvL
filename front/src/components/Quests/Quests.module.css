@@ -1,0 +1,15 @@
+.QuestsAnimation {
+    animation: scaleIn .4s ease-in;
+}
+
+@keyframes scaleIn {
+    0% {
+        transform: scale(0, 0);
+        opacity: 0;
+    }
+
+    100% {
+        transform: scale(1, 1);
+        opacity: 1;
+    }
+}
