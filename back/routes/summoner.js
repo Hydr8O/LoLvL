@@ -16,6 +16,6 @@ router.post('/gameStats/:summonerName', dbController.insertGameStats);
 
 router.get('/check/:summonerId', dbController.isInDb);
 
-router.get('/:summonerId/quests', questsController.loadQuests);
+router.get('/:summonerId/quests/:tier/:rank', questsController.loadQuests);
 
 module.exports = router;

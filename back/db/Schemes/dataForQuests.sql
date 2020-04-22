@@ -11,7 +11,9 @@ CREATE TABLE data_for_quests(
     game_duration INT NOT NULL,
     summoner_id TEXT NOT NULL,
     game_creation BIGINT NOT NULL UNIQUE,
-    rank VARCHAR(10) NOT NULL,
-    tier VARCHAR(2) NOT NULL,
+    rank VARCHAR(3) NOT NULL,
+    tier VARCHAR(10) NOT NULL,
+    minions_killed INT NOT NULL,
+    gold_earned INT NOT NULL,
     CONSTRAINT unique_game PRIMARY KEY (id, summoner_id)
 );

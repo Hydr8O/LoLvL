@@ -28,6 +28,9 @@ const createNewQuests = (id) => {
 
 exports.loadQuests = (req, res) => {
     const id = req.params.summonerId;
+    const tier = req.params.tier;
+    const rank = req.params.rank;
+    
     dbPool.query(`SELECT 
         quest.id, 
         summoner_id, 

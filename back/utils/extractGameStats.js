@@ -13,6 +13,7 @@ const extractGameStats = (data, summonerId, forStatistics) => {
             deaths: gameStats.deaths,
             assists: gameStats.assists,
             goldEarned: gameStats.goldEarned,
+            minionsKilled: gameStats.totalMinionsKilled,
             longestTimeSpentLiving: gameStats.longestTimeSpentLiving,
             totalDamageDealt: gameStats.totalDamageDealt,
             wardsPlaced: gameStats.wardsPlaced,

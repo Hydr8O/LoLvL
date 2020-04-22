@@ -23,7 +23,9 @@ CREATE TABLE game_stats(
     summoner_id TEXT NOT NULL,
     CONSTRAINT one_game PRIMARY KEY (id, summoner_id),
     FOREIGN KEY(summoner_id) REFERENCES summoner(id),
-    game_creation BIGINT NOT NULL
+    game_creation BIGINT NOT NULL,
+    minions_killed INT NOT NULL,
+    gold_earned INT NOT NULL
 );
 
 CREATE TABLE data_for_quests(
@@ -39,8 +41,10 @@ CREATE TABLE data_for_quests(
     game_duration INT NOT NULL,
     summoner_id TEXT NOT NULL,
     game_creation BIGINT NOT NULL UNIQUE,
-    rank VARCHAR(10) NOT NULL,
-    tier VARCHAR(2) NOT NULL,
+    rank VARCHAR(3) NOT NULL,
+    tier VARCHAR(10) NOT NULL,
+    minions_killed INT NOT NULL,
+    gold_earned INT NOT NULL,
     CONSTRAINT unique_game PRIMARY KEY (id, summoner_id)
 );
 

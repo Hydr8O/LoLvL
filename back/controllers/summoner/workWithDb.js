@@ -45,7 +45,9 @@ const constructGameStatsQuery = (games, summonerId, table, rank, tier) => {
                     '${summonerId}',
                     ${game.gameCreation},
                     '${rank}',
-                    '${tier}'
+                    '${tier}',
+                    ${game.goldEarned},
+                    ${game.minionsKilled}
                 )`
             );
         }).join(', ');
@@ -66,7 +68,9 @@ const constructGameStatsQuery = (games, summonerId, table, rank, tier) => {
         summoner_id,
         game_creation,
         rank,
-        tier)
+        tier,
+        gold_earned,
+        minions_killed)
     VALUES ${gameStatsForm} RETURNING lane`;
     } else {
         gameStatsForm = games.map((game) => {
@@ -83,7 +87,9 @@ const constructGameStatsQuery = (games, summonerId, table, rank, tier) => {
                     '${game.lane}',
                     ${game.gameDuration},
                     '${summonerId}',
-                    ${game.gameCreation}
+                    ${game.gameCreation},
+                    ${game.goldEarned},
+                    ${game.minionsKilled}
                 )`
             );
         }).join(', ');
@@ -102,7 +108,9 @@ const constructGameStatsQuery = (games, summonerId, table, rank, tier) => {
         lane,
         game_duration,
         summoner_id,
-        game_creation)
+        game_creation,
+        gold_earned,
+        minions_killed)
     VALUES ${gameStatsForm} RETURNING lane`;
     
     }

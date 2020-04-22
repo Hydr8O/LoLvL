@@ -10,7 +10,7 @@ const Quests = (props) => {
 
     useEffect(() => {
         (async () => {
-            const { data } = await axios.get(`http://localhost:1234/summoner/${props.id}/quests`);
+            const { data } = await axios.get(`http://localhost:1234/summoner/${props.id}/quests/${props.tier}/${props.rank}`);
             setQuestInfo([...data]);
             console.log([...data]);
         })();

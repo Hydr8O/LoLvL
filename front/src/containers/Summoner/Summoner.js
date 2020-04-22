@@ -69,7 +69,9 @@ class Summoner extends Component {
                             gameDuration: game.gameDuration,
                             lane: game.lane,
                             queueId: game.queueId,
-                            gameCreation: game.gameCreation
+                            gameCreation: game.gameCreation,
+                            minionsKilled: game.participantData.stats.totalMinionsKilled,
+                            goldEarned: game.participantData.stats.goldEarned
                         }
                     }),
                     summonerId: this.props.summonerInfo.id
@@ -97,7 +99,9 @@ class Summoner extends Component {
                             gameDuration: game.gameDuration,
                             lane: game.lane,
                             queueId: game.queueId,
-                            gameCreation: game.gameCreation
+                            gameCreation: game.gameCreation,
+                            minionsKilled: game.participantData.stats.totalMinionsKilled,
+                            goldEarned: game.participantData.stats.goldEarned
                         }
                     }),
                     summonerId: this.props.summonerInfo.id,
@@ -264,18 +268,17 @@ render() {
     return (
         <Fragment>
             <Switch>
-            <Route path='/summoner/:summonerId/quests' render={() => <Quests id={this.props.summonerInfo.id}/>}/>
+            <Route path='/summoner/:summonerId/quests' render={() => 
+                <Quests 
+                    id={this.props.summonerInfo.id} 
+                    tier={this.props.rankInfo.soloRank.tier}
+                    rank={this.props.rankInfo.soloRank.rank}
+                />}
+            />
             <Route path='/summoner/:summonerId' render={() => toRender}/>
             </Switch>
             
             {this.props.setLoading ? <Loading /> : null}
-            {this.state.showBackdrop ? 
-                <Backdrop hideBackdrop={this.hideBackdropHandler}>
-                    <Popup>
-                        Sorry, this feature isn't available at the moment
-                    </Popup>
-                </Backdrop> : 
-                null}
         </Fragment>
     );
 }

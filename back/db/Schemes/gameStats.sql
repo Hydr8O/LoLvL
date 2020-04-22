@@ -12,5 +12,7 @@ CREATE TABLE game_stats(
     summoner_id TEXT NOT NULL,
     CONSTRAINT one_game PRIMARY KEY (id, summoner_id),
     FOREIGN KEY(summoner_id) REFERENCES summoner(id),
-    game_creation BIGINT NOT NULL
+    game_creation BIGINT NOT NULL,
+    minions_killed INT NOT NULL,
+    gold_earned INT NOT NULL
 );

@@ -1,10 +1,10 @@
 const axios = require('axios');
-const RANK = 'GOLD';
-const TIER = 'II';
+const RANK = 'IV';
+const TIER = 'BRONZE';
 const {summonersByRank} = require('../endpoints');
 const extractGameStats = require('../utils/extractGameStats');
 
-const extractSummonerIds = (data, numberOfEntries = 10) => {
+const extractSummonerIds = (data, numberOfEntries = 15) => {
     return data.map(entry => entry.summonerId)
         .slice(0, numberOfEntries);
 };
@@ -31,7 +31,7 @@ const contructAllGameStats = async (gameStatsProm, ids) => {
 
 const getAccIds = async (ids, req) => {
     const summonerInfoProm = ids.map(id => {
-        return axios.get(req.locals.endpoints.summonerByIdPoint.replace('summonerId', id));
+        return axios.get(req.app.locals.endpoints.summonerByIdPoint.replace('summonerId', id));
     })
     summonerInfo = await Promise.all(summonerInfoProm);
     return summonerInfo.map(summoner => summoner.data.accountId);
@@ -55,7 +55,7 @@ const getDataForQuests = (req, res) => {
         try {
             ////////////////////////
             //Get data about summoners in tier, rank and queue type
-            let { data } = await axios.get(summonersByRank(RANK, TIER));
+            let { data } = await axios.get(summonersByRank(TIER, RANK));
             ////////////////////////
             //Extract 10 summoners ids
             const ids = extractSummonerIds(data);

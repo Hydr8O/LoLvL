@@ -1,4 +1,4 @@
-const apiKey = 'RGAPI-7d024e73-0a32-486f-a036-f46e43111602';
+const apiKey = 'RGAPI-50d4a733-48d5-41fd-9441-b478bd2fbbce';
 
 exports.initEndpoints = (newVersion) => {
     return {
@@ -15,6 +15,6 @@ exports.initEndpoints = (newVersion) => {
     };
 };
 
-exports.summonersByRank = (rank, tier) => {
-    return `https://ru.api.riotgames.com/lol/league/v4/entries/RANKED_SOLO_5x5/${rank}/${tier}?page=1&api_key=${apiKey}`;
+exports.summonersByRank = (tier, rank) => {
+    return `https://ru.api.riotgames.com/lol/league/v4/entries/RANKED_SOLO_5x5/${tier}/${rank}?page=1&api_key=${apiKey}`;
 }
