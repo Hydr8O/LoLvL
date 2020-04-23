@@ -4,8 +4,6 @@ import RecentGames from '../../components/RecentGames/RecentGames';
 import { connect } from 'react-redux';
 import { withRouter, Route, Switch } from 'react-router-dom';
 import Loading from '../../components/Loading/Loading';
-import Backdrop from '../../components/Backdrop/Backdrop';
-import Popup from '../../components/Popup/Popup';
 import { idToName } from '../../utils/mapNames';
 import Quests from '../../components/Quests/Quests';
 import axios from 'axios';
@@ -264,15 +262,26 @@ render() {
         />:
         null
     ]
-
+    
+    let tier;
+    let rank;
+    
+    if (this.props.rankInfo.soloRank) {
+        tier = this.props.rankInfo.soloRank.tier;
+        rank = this.props.rankInfo.soloRank.rank;
+    } else if (this.props.rankInfo.flexRank) {
+        tier = this.props.rankInfo.flexRank.tier;
+        rank = this.props.rankInfo.flexRank.rank;
+    }
+    
     return (
         <Fragment>
             <Switch>
             <Route path='/summoner/:summonerId/quests' render={() => 
                 <Quests 
                     id={this.props.summonerInfo.id} 
-                    tier={this.props.rankInfo.soloRank.tier}
-                    rank={this.props.rankInfo.soloRank.rank}
+                    tier={tier}
+                    rank={rank}
                 />}
             />
             <Route path='/summoner/:summonerId' render={() => toRender}/>
