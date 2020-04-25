@@ -1,14 +1,16 @@
 const axios = require('axios');
 const ranks = {
-    ranks: ['I', 'II', 'III', 'IV'],
-    tiers: ['IRON', 'BRONZE', 'SILVER', 'GOLD', 'PLATINUM', 'DIAMOND']
+    // ranks: ['I', 'II', 'III', 'IV'],
+    // tiers: ['IRON', 'BRONZE', 'SILVER', 'GOLD', 'PLATINUM', 'DIAMOND']
+    ranks: ['III'],
+    tiers: ['SILVER']
 }
 
 
 const { summonersByRank } = require('../endpoints');
 const extractGameStats = require('../utils/extractGameStats');
 
-const extractSummonerIds = (data, numberOfEntries = 13) => {
+const extractSummonerIds = (data, numberOfEntries = 10) => {
     return data.map(entry => entry.summonerId)
         .slice(0, numberOfEntries);
 };

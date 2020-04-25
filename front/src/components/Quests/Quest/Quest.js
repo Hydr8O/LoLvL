@@ -15,7 +15,7 @@ const Quest = ({questInfo}) => {
                 <QuestDescription description={questInfo.description}/>
                 <QuestProgress progress={{
                     currentProgress: questInfo.currentProgress, 
-                    questGoal: questInfo.questGoal
+                    questGoal: questInfo.gameGoal
                     }}/>
             </QuestContent>
         </div>

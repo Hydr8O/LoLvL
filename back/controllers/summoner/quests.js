@@ -1,6 +1,11 @@
 const dbPool = require('../../db/dbPool');
 const questTypes = require('../../questTypes');
 
+const kda = '(kills + assists) / deaths';
+const gpm = 'gold_earned / game_duration';
+const wards = 'wards_placed';
+const cs = 'minions_killed / game_duration';
+
 const createNewQuests = async (summonerId, tier, rank) => {
     console.log(tier, rank);
     const statsQuery = (table) => {
@@ -12,10 +17,10 @@ const createNewQuests = async (summonerId, tier, rank) => {
             if (table === 'game_stats') {
                 condition = `summoner_id = '${summonerId}'`;
             }
-            const avgCS = 'AVG(minions_killed / game_duration)';
-            const avgKDA = 'AVG((kills + assists) / deaths)';
-            const avgGPM = 'AVG(gold_earned / game_duration)';
-            const avgWards = 'AVG(wards_placed)';
+            const avgCS = `AVG(${cs})`;
+            const avgKDA = `AVG(${kda})`;
+            const avgGPM = `AVG(${gpm})`;
+            const avgWards = `AVG(${wards})`;
             const query =
                 `SELECT 
                 ${avgCS} AS cs, 
@@ -93,8 +98,9 @@ const getQuests = (summonerId) => {
                 summoner_id, 
                 current_progress, 
                 description, 
-                quest_goal,
-                quest_img
+                game_goal,
+                quest_img,
+                type_id
             FROM quest 
             JOIN quest_type 
             ON quest.type_id = quest_type.id 
@@ -103,40 +109,177 @@ const getQuests = (summonerId) => {
                 if (err) {
                     reject(err);
                 }
-                resolve(response.rows)
+                resolve(response.rows.map(row => {
+                    return {
+                        id: row.id,
+                        summonerId: row.summoner_id,
+                        currentProgress: row.current_progress,
+                        description: row.description,
+                        gameGoal: row.game_goal,
+                        questImg: row.quest_img,
+                        typeId: row.type_id
+                    }
+                }))
             })
     });
 }
 
+const statsToConsider = (id) => {
+    return new Promise((resolve, reject) => {
+        const query = `
+            SELECT 
+                created_at
+            FROM quest
+            WHERE summoner_id = '${id}'
+        `;
+        dbPool.query(
+            query,
+            (err, response) => {
+                if (err) {
+                    reject(err);
+                };
+
+                for (row of response.rows) {
+                    dbPool.query(`SELECT ${wards} AS wards, ${kda} AS kda, ${gpm} AS gpm, ${cs} AS cs FROM game_stats WHERE game_creation > ${row.created_at} AND deaths != 0`, (err, response) => {
+                        if (err) {
+                            reject(err);
+                        }
+                        resolve(response.rows);
+                    })
+                };
+            } 
+        )
+    });
+}
+
+const getStatsAndGoals = (id) => {
+    return new Promise((resolve, reject) => {
+        const query = `
+            SELECT 
+                type_id, 
+                quest_goal 
+            FROM quest_type 
+            JOIN quest 
+            ON quest_type.id = quest.type_id 
+            WHERE quest.summoner_id = '${id}'
+        `;
+        dbPool.query(
+            query,
+            (err, response) => {
+                if (err) {
+                    reject(err);
+                };
+
+                const result = {};
+
+                for (row of response.rows) {
+                    result[row.type_id] = row.quest_goal;
+                }
+
+                
+                resolve(result);
+            } 
+        )
+    });
+}
+
+const updateQuest = (id, typeId, count) => {
+    console.log(id, typeId, count);
+    return new Promise((resolve, reject) => {
+        const query = `
+            UPDATE quest
+            SET current_progress = ${count}
+            WHERE type_id = ${typeId} AND summoner_id = '${id}'
+        `;
+        dbPool.query(
+            query,
+            (err, response) => {
+                if (err) {
+                    console.log('Fail updateQuest');
+                    reject(err);
+                };
+              
+                resolve('ok');
+            } 
+        )
+    });
+}
+
 exports.loadQuests = (req, res) => {
+    console.log('load quest');
     (async () => {
         try {
             const id = req.params.summonerId;
             const tier = req.params.tier;
             const rank = req.params.rank;
 
+            
+
             let quests = await getQuests(id);
 
-            let data;
+            if (quests.length !== 0) {
+                const stats = await statsToConsider(id);
+                const typesAndGoals = await getStatsAndGoals(id);
+                const count = {};
+                console.log(quests);
+                for (quest of quests) {
+                    if (quest.typeId === questTypes.ward) {
+                        count.ward = quest.currentProgress;
+                    }
 
-            if (quests.length === 0) {
+                    if (quest.typeId === questTypes.minion) {
+                        count.minion = quest.currentProgress;
+                    }
+
+                    if (quest.typeId === questTypes.gold) {
+                        count.gold = quest.currentProgress;
+                    }
+
+                    if (quest.typeId === questTypes.kda) {
+                        count.kda = quest.currentProgress;
+                    }
+                }
+                
+                console.log(count);
+                console.log(stats);
+                for (row of stats) {
+                    if (row.wards >= typesAndGoals[questTypes.ward]) {
+                        count.ward++;
+                        console.log('Wards');
+                    }
+    
+                    if (row.cs >= typesAndGoals[questTypes.minion]) {
+                        count.minion++;
+                        console.log('CS');
+                    }
+    
+                    if (row.gpm >= typesAndGoals[questTypes.gold]) {
+                        count.gold++;
+                        console.log('GPM');
+                    }
+    
+                    if (row.kda >= typesAndGoals[questTypes.kda]) {
+                        count.kda++;
+                        console.log('KDA');
+                    }   
+                }
+                
+                for (key of Object.keys(count)) {
+                    await updateQuest(id, questTypes[key], count[key])
+                }
+
+                quests = await getQuests(id);
+            } else {
                 await createNewQuests(id, tier, rank);
                 quests = await getQuests(id);
             }
+            
+        
+            
 
-            data = quests.map(entry => {
-                return {
-                    id: entry.id,
-                    summonerId: entry.summoner_id,
-                    currentProgress: entry.current_progress,
-                    description: entry.description,
-                    questGoal: entry.quest_goal,
-                    questImg: entry.quest_img
-                }
-            });
-            console.log("data", data);
+          
 
-            res.json(data);
+            res.json(quests);
         } catch (err) {
             console.log(err);
         }

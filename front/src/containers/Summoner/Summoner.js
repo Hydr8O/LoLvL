@@ -4,11 +4,12 @@ import RecentGames from '../../components/RecentGames/RecentGames';
 import { connect } from 'react-redux';
 import { withRouter, Route, Switch } from 'react-router-dom';
 import Loading from '../../components/Loading/Loading';
-import { idToName } from '../../utils/mapNames';
 import Quests from '../../components/Quests/Quests';
+import { idToName } from '../../utils/mapNames';
+import matchInfo from '../../utils/matchInfo';
 import axios from 'axios';
 
-const ITEMS = ["item0", "item1", "item2", "item3", "item4", "item5", "item6"];
+
 
 class Summoner extends Component {
 
@@ -21,6 +22,8 @@ class Summoner extends Component {
         this.setState({showBackdrop: true});
     };
 
+    
+
     hideBackdropHandler = () => {
         console.log('hide');
         this.setState({showBackdrop: false});
@@ -30,7 +33,11 @@ class Summoner extends Component {
         if (window.innerHeight + window.pageYOffset > document.body.clientHeight - 50 &&
             this.props.matchHistory) {
             console.log('asdasd')
-            this.matches(this.props.matchHistory.slice(0, this.props.numberOfMatches))
+            matchInfo.matches(
+                this.props.matchHistory.slice(0, this.props.numberOfMatches), 
+                this.props.summonerInfo.id, 
+                this.props.mappedNames.mappedItemNames, 
+                this.props.mappedNames.mappedChampNames)
                 .then(matchesFullInfo => {
                     console.log(matchesFullInfo)
                     console.log(this.props.recentGames);
@@ -79,8 +86,11 @@ class Summoner extends Component {
                     this.props.onInDb(true);
                 });
         } else {
-    
-            this.matches(this.props.matchHistory.slice(0, this.props.numberOfMatches))
+            matchInfo.matches(
+                this.props.matchHistory.slice(0, this.props.numberOfMatches), 
+                this.props.summonerInfo.id, 
+                this.props.mappedNames.mappedItemNames, 
+                this.props.mappedNames.mappedChampNames)
             .then(matchesFullInfo => {
             axios.post(`http://localhost:1234/summoner/gameStats/${this.props.summonerInfo.name}`,
                 {
@@ -169,7 +179,11 @@ async getAllInfo() {
     );
     const rank = this.rankInfo();
     const mastery = this.championMasteryInfo();
-    const matchesBase = this.matchesBaseInfo(100);
+    const matchesBase = matchInfo.matchesBaseInfo(
+        100, 
+        this.props.summonerInfo.accountId, 
+        this.props.mappedNames.mappedChampNames
+    );
     const results = await Promise.all([mastery, rank, matchesBase]);
     this.props.onOtherInfo(
         {
@@ -202,38 +216,6 @@ async getSummonerData() {
     return data;
 }
 
-async matchesBaseInfo(numberOfEntries) {
-    const { data } = await axios.get(`http://localhost:1234/matches/${this.props.summonerInfo.accountId}?numberOfEntries=${numberOfEntries}`);
-    return idToName(data.matches, 'champion', this.props.mappedNames.mappedChampNames);
-}
-
-async matches(matchesBase) {
-    let matchFullInfo = matchesBase.map(match => {
-        return this.matchInfo(match);
-    })
-    matchFullInfo = Promise.all(matchFullInfo);
-    return matchFullInfo;
-}
-
-
-async matchInfo(match) {
-    const { data } = await axios.get(`http://localhost:1234/match/${match.gameId}`);
-    const participantId = data.participantIdentities
-        .find(participant => participant.player.summonerId === this.props.summonerInfo.id).participantId;
-    const summonerInfo = data.participants[participantId - 1];
-    idToName(summonerInfo, ITEMS, this.props.mappedNames.mappedItemNames, true);
-    idToName(summonerInfo, 'championId', this.props.mappedNames.mappedChampNames);
-    console.log(data);
-    return {
-        queueId: data.queueId,
-        gameId: match.gameId,
-        gameCreation: data.gameCreation,
-        participantData: data.participants[participantId - 1],
-        lane: match.lane,
-        gameDuration: Math.floor(data.gameDuration / 60),
-        matchMembers: data.participants
-    };
-}
 
 
 render() {
@@ -282,6 +264,9 @@ render() {
                     id={this.props.summonerInfo.id} 
                     tier={tier}
                     rank={rank}
+                    mappedNames={this.props.mappedNames}
+                    accountId={this.props.summonerInfo.accountId}
+                    name={this.props.summonerInfo.name}
                 />}
             />
             <Route path='/summoner/:summonerId' render={() => toRender}/>
