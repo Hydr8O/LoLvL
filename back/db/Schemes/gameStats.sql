@@ -14,5 +14,6 @@ CREATE TABLE game_stats(
     FOREIGN KEY(summoner_id) REFERENCES summoner(id),
     game_creation BIGINT NOT NULL,
     minions_killed INT NOT NULL,
-    gold_earned INT NOT NULL
+    gold_earned INT NOT NULL,
+    was_used BOOLEAN DEFAULT false
 );

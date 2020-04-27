@@ -140,10 +140,23 @@ const statsToConsider = (id) => {
                 };
 
                 for (row of response.rows) {
-                    dbPool.query(`SELECT ${wards} AS wards, ${kda} AS kda, ${gpm} AS gpm, ${cs} AS cs FROM game_stats WHERE game_creation > ${row.created_at} AND deaths != 0`, (err, response) => {
+                    dbPool.query(`
+                    UPDATE game_stats
+                    SET was_used = true
+                    WHERE game_creation > ${row.created_at} 
+                    AND was_used = false
+                    AND deaths != 0
+                    RETURNING 
+                        ${wards} AS wards, 
+                        ${kda} AS kda, 
+                        ${gpm} AS gpm, 
+                        ${cs} AS cs
+                    `,
+                    (err, response) => {
                         if (err) {
                             reject(err);
                         }
+
                         resolve(response.rows);
                     })
                 };
@@ -189,7 +202,8 @@ const updateQuest = (id, typeId, count) => {
         const query = `
             UPDATE quest
             SET current_progress = ${count}
-            WHERE type_id = ${typeId} AND summoner_id = '${id}'
+            WHERE type_id = ${typeId} 
+            AND summoner_id = '${id}'
         `;
         dbPool.query(
             query,
@@ -198,10 +212,36 @@ const updateQuest = (id, typeId, count) => {
                     console.log('Fail updateQuest');
                     reject(err);
                 };
-              
-                resolve('ok');
+
+                resolve('Ok');
             } 
         )
+    });
+}
+
+const isQuestCompleted = () => {
+    return new Promise((resolve, reject) => {
+        const query = `
+            DELETE
+            FROM quest
+            WHERE quest.id 
+            IN(
+                SELECT 
+                    quest.id
+                FROM quest
+                JOIN quest_type
+                ON quest.type_id = quest_type.id
+                WHERE current_progress >= game_goal
+            )
+        `;
+
+        dbPool.query(query, (err, response) => {
+            if (err) {
+                reject(err);
+            }
+            console.log('isQuestCompleted');
+            resolve('Ok');
+        })
     });
 }
 
@@ -265,19 +305,15 @@ exports.loadQuests = (req, res) => {
                 }
                 
                 for (key of Object.keys(count)) {
-                    await updateQuest(id, questTypes[key], count[key])
+                    console.log(await updateQuest(id, questTypes[key], count[key]));
+                    console.log(await isQuestCompleted());
                 }
 
                 quests = await getQuests(id);
             } else {
                 await createNewQuests(id, tier, rank);
                 quests = await getQuests(id);
-            }
-            
-        
-            
-
-          
+            }      
 
             res.json(quests);
         } catch (err) {
