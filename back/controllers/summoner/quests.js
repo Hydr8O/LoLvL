@@ -1,6 +1,7 @@
 const dbPool = require('../../db/dbPool');
 const questTypes = require('../../questTypes');
 
+
 const kda = '(kills + assists) / deaths';
 const gpm = 'gold_earned / game_duration';
 const wards = 'wards_placed';
@@ -41,15 +42,18 @@ const createNewQuests = async (summonerId, tier, rank) => {
         })
     };
 
-    const insertQuest = (typeId, summonerId) => {
+    const insertQuest = (typeId, summonerId, questGoal) => {
+        console.log(questGoal);
         return new Promise((resolve, reject) => {
             const query =
                 `INSERT INTO quest(
                 type_id, 
-                summoner_id
+                summoner_id,
+                quest_goal
             ) VALUES (
                 ${typeId},
-                '${summonerId}'
+                '${summonerId}',
+                ${Math.floor(questGoal)}
             )`;
             console.log(query);
             dbPool.query(query, (err, response) => {
@@ -67,22 +71,29 @@ const createNewQuests = async (summonerId, tier, rank) => {
         try {
             const overallStats = await statsQuery('data_for_quests');
             const summonerStats = await statsQuery('game_stats');
-            if (summonerStats.cs < overallStats.cs) {
-                await insertQuest(questTypes.minion, summonerId);
+            const goalOffsets = {
+                cs: Math.floor(Math.random() * 2),
+                kda: Math.floor(Math.random() * 3),
+                gpm: Math.floor(Math.random() * 15),
+                wards: Math.floor(Math.random() * 3)
+            }
+            console.log(goalOffsets);
+            if (Number(summonerStats.cs) < Number(overallStats.cs)) {
+                await insertQuest(questTypes.minion, summonerId, Number(overallStats.cs) + Number(goalOffsets.cs));
             }
 
-            if (summonerStats.kda < overallStats.kda) {
-                await insertQuest(questTypes.kda, summonerId);
+            if (Number(summonerStats.kda) < Number(overallStats.kda)) {
+                await insertQuest(questTypes.kda, summonerId, Number(overallStats.kda) + Number(goalOffsets.kda));
             }
 
-            if (summonerStats.gpm < overallStats.gpm) {
-                await insertQuest(questTypes.gold, summonerId);
+            if (Number(summonerStats.gpm) < Number(overallStats.gpm)) {
+                await insertQuest(questTypes.gold, summonerId, Number(overallStats.gpm) + Number(goalOffsets.gpm));
             }
 
-            if (summonerStats.wards < overallStats.wards) {
-                await insertQuest(questTypes.ward, summonerId);
+            if (Number(summonerStats.wards) < Number(overallStats.wards)) {
+                await insertQuest(questTypes.ward, summonerId, Number(overallStats.wards) + Number(goalOffsets.wards));
             }
-
+            console.log(summonerStats.wards, overallStats.wards);
             console.log(overallStats);
             console.log(summonerStats);
         } catch (err) {
@@ -99,6 +110,7 @@ const getQuests = (summonerId) => {
                 current_progress, 
                 description, 
                 game_goal,
+                quest_goal,
                 quest_img,
                 type_id
             FROM quest 
@@ -117,7 +129,8 @@ const getQuests = (summonerId) => {
                         description: row.description,
                         gameGoal: row.game_goal,
                         questImg: row.quest_img,
-                        typeId: row.type_id
+                        typeId: row.type_id,
+                        questGoal: row.quest_goal
                     }
                 }))
             })

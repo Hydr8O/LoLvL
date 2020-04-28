@@ -2,8 +2,8 @@ const axios = require('axios');
 const ranks = {
     // ranks: ['I', 'II', 'III', 'IV'],
     // tiers: ['IRON', 'BRONZE', 'SILVER', 'GOLD', 'PLATINUM', 'DIAMOND']
-    ranks: ['III'],
-    tiers: ['SILVER']
+    ranks: ['II'],
+    tiers: ['GOLD']
 }
 
 
@@ -104,7 +104,7 @@ const getDataForQuests = (req, res) => {
                             tier: tier
                         });
                     }
-                    await sleep(60000);
+                    // await sleep(60000);
                 }
             }
             res.send('Test');

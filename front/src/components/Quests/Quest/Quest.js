@@ -8,11 +8,14 @@ import QuestProgress from './QuestProgress/QuestProgress';
 
 const Quest = ({questInfo}) => {
     console.log(questInfo)
+    const description = questInfo.description
+    .replace('$questGoal', questInfo.questGoal)
+    .replace('$gameGoal', questInfo.gameGoal);
     return (
         <div className={classes.Quest}>
             <QuestImg img={questInfo.questImg}/>
             <QuestContent>
-                <QuestDescription description={questInfo.description}/>
+                <QuestDescription description={description}/>
                 <QuestProgress progress={{
                     currentProgress: questInfo.currentProgress, 
                     questGoal: questInfo.gameGoal

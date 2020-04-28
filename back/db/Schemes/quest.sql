@@ -5,6 +5,7 @@ CREATE TABLE quest(
     current_progress INT DEFAULT 0,
     game_progress INT DEFAULT 0,
     created_at BIGINT DEFAULT to_char(CURRENT_TIMESTAMP, 'yyyymmddhh24miss')::bigint,
+    quest_goal INT NOT NULL,
     FOREIGN KEY(summoner_id) REFERENCES summoner(id), 
     FOREIGN KEY(type_id) REFERENCES quest_type(id)
 );
