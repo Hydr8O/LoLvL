@@ -1,4 +1,4 @@
-const apiKey = 'RGAPI-c0f189fa-0e2f-4c68-8bfd-f4c6e9eb58c9';
+const apiKey = 'RGAPI-3157508a-c329-4de5-868b-49b76a9bfcd9';
 
 exports.initEndpoints = (newVersion) => {
     return {

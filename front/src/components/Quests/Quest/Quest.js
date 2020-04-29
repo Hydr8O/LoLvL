@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState, useEffect} from 'react';
 import classes from './Quest.module.css';
 import QuestContent from './QuestContent/QuestContent';
 import QuestImg from './QuestImg/QuestImg';
@@ -6,12 +6,22 @@ import QuestDescription from './QuestDescription/QuestDescription';
 import QuestProgress from './QuestProgress/QuestProgress';
 
 
-const Quest = ({questInfo}) => {
+const Quest = ({questInfo, completeQuestHandler}) => {
+
+
+    useEffect(() => {
+        console.log('mounted');
+        if (questInfo.gameGoal === questInfo.currentProgress) {
+            completeQuestHandler(questInfo.id);
+        }
+    }, [questInfo]);
+
     console.log(questInfo)
     const description = questInfo.description
     .replace('$questGoal', questInfo.questGoal)
     .replace('$gameGoal', questInfo.gameGoal);
-    return (
+
+    let quest = (
         <div className={classes.Quest}>
             <QuestImg img={questInfo.questImg}/>
             <QuestContent>
@@ -23,6 +33,9 @@ const Quest = ({questInfo}) => {
             </QuestContent>
         </div>
     );
+
+
+    return (quest);
 }
 
 export default Quest;

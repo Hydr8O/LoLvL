@@ -6,15 +6,29 @@ import matchInfo from '../../utils/matchInfo';
 import Quest from './Quest/Quest';
 import Button from '../Button/Button';
 import Loading from '../Loading/Loading';
+import TransitionGroup from 'react-transition-group/TransitionGroup';
+import CSSTransition from 'react-transition-group/CSSTransition';
 
 const numberOfEntries = 10;
 
 const Quests = (props) => {
-    const [questsInfo, setQuestInfo] = useState();
+    const [questsInfo, setQuestsInfo] = useState();
     const [disableBtn, setDisableBtn] = useState(false);
+    const [completedQuests, setCompletedQuests] = useState([]);
     let quests = null;
 
+    const completeQuestHandler = (questId) => {
+        setCompletedQuests([...completedQuests, questId]);
+    };
+
+    const refreshQuests = async () => {
+        const { data } = await axios.get(`http://localhost:1234/summoner/${props.id}/quests/${props.tier}/${props.rank}`);
+        setQuestsInfo([...data]);
+        
+    }
+
     const refreshQuestsHandler = async () => {
+        console.log(completedQuests);
         try {
             setDisableBtn(true);
             const matchesBaseInfo = await matchInfo.matchesBaseInfo(
@@ -52,19 +66,24 @@ const Quests = (props) => {
                     summonerId: props.id,
                 }
             );
-            const { data } = await axios.get(`http://localhost:1234/summoner/${props.id}/quests/${props.tier}/${props.rank}`);
-            setQuestInfo([...data]);
+            if (completedQuests.length !== 0) {
+                await axios.post('http://localhost:1234/summoner/quests/delete', {completedQuests});
+            }  
+            await refreshQuests();
+            
+            
+            console.log(completedQuests);
             setDisableBtn(false);
         } catch(err) {
             console.log(err);
         }
     };
 
+
     useEffect(() => {
         (async () => {
-            const { data } = await axios.get(`http://localhost:1234/summoner/${props.id}/quests/${props.tier}/${props.rank}`);
-            setQuestInfo([...data]);
-            console.log([...data]);
+            await refreshQuests();
+            console.log(questsInfo);
         })();
     }, []);
 
@@ -72,15 +91,22 @@ const Quests = (props) => {
         console.log(questsInfo)
         const questsArray = questsInfo.map(quest => {
             return (
-                <Quest key={quest.id} questInfo={quest} />
+                <CSSTransition key={quest.id} classNames='fade-slide' timeout={1000}>
+                    <Quest questInfo={quest} completeQuestHandler={completeQuestHandler}/>
+                </CSSTransition>
             );
         })
         quests =
             <Jumbotron animation={classes.QuestsAnimation}>
+                <Button type='Primary' link={true} to={`/summoner/${props.name}`}>
+                    Back To Profile
+                </Button>
                 <Button onClick={[refreshQuestsHandler]} type='Primary' disabled={disableBtn}>
                 {disableBtn ? <Loading small={true}/> : 'Refresh Quests'}
                 </Button>
-                {questsArray}
+                <TransitionGroup className={classes.Quests}>
+                    {questsArray}
+                </TransitionGroup>
             </Jumbotron>
 
     }

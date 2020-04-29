@@ -18,4 +18,6 @@ router.get('/check/:summonerId', dbController.isInDb);
 
 router.get('/:summonerId/quests/:tier/:rank', questsController.loadQuests);
 
+router.post('/quests/delete', questsController.deleteQuests);
+
 module.exports = router;

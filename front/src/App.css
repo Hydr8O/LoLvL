@@ -1,1 +1,23 @@
 
+/*
+These styles are applied when quest is being deleted
+*/
+
+.fade-slide-enter {
+    opacity: 1;
+}
+
+.fade-slide-enter-active {
+    opacity: 1;
+}
+
+.fade-slide-exit {
+    opacity: 1;
+}
+
+.fade-slide-exit-active {
+    opacity: 0;
+    transition: all 1s ease-out;
+    transform: translateX(10rem);
+}
+

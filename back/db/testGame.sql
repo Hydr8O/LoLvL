@@ -1,3 +1,6 @@
+
+DELETE FROM game_stats WHERE id IN (1231341212, 1231341213, 123134121);
+
 INSERT INTO
     game_stats(
         id,
@@ -22,7 +25,7 @@ INSERT INTO
         3,
         3242,
         2234,
-        11,
+        15,
         'lane',
         22314431,
         '3r8TNHznMBto9WHtuTx11rWsorPgsHIftTi1k1nQ0CcZYA',
@@ -55,7 +58,7 @@ INSERT INTO
         3,
         3242,
         2234,
-        11,
+        15,
         'lane',
         22314431,
         '3r8TNHznMBto9WHtuTx11rWsorPgsHIftTi1k1nQ0CcZYA',
@@ -88,7 +91,7 @@ INSERT INTO
         3,
         3242,
         2234,
-        11,
+        15,
         'lane',
         22314431,
         '3r8TNHznMBto9WHtuTx11rWsorPgsHIftTi1k1nQ0CcZYA',

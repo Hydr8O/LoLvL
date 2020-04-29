@@ -2,8 +2,8 @@ const axios = require('axios');
 const ranks = {
     // ranks: ['I', 'II', 'III', 'IV'],
     // tiers: ['IRON', 'BRONZE', 'SILVER', 'GOLD', 'PLATINUM', 'DIAMOND']
-    ranks: ['II'],
-    tiers: ['GOLD']
+    ranks: ['III'],
+    tiers: ['SILVER']
 }
 
 

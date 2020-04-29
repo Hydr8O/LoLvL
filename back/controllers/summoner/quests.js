@@ -153,10 +153,10 @@ const statsToConsider = (id) => {
                 };
 
                 for (row of response.rows) {
-                    dbPool.query(`
+                    const query = `
                     UPDATE game_stats
                     SET was_used = true
-                    WHERE game_creation > ${row.created_at} 
+                    WHERE game_creation > ${row.created_at.getTime()}
                     AND was_used = false
                     AND deaths != 0
                     RETURNING 
@@ -164,13 +164,16 @@ const statsToConsider = (id) => {
                         ${kda} AS kda, 
                         ${gpm} AS gpm, 
                         ${cs} AS cs
-                    `,
+                    `
+                    console.log(query);
+                    dbPool.query(query,
                     (err, response) => {
                         if (err) {
                             reject(err);
+                        } else {
+                            resolve(response.rows);
                         }
-
-                        resolve(response.rows);
+                        
                     })
                 };
             } 
@@ -226,35 +229,9 @@ const updateQuest = (id, typeId, count) => {
                     reject(err);
                 };
 
-                resolve('Ok');
+                resolve('Quest updated');
             } 
         )
-    });
-}
-
-const isQuestCompleted = () => {
-    return new Promise((resolve, reject) => {
-        const query = `
-            DELETE
-            FROM quest
-            WHERE quest.id 
-            IN(
-                SELECT 
-                    quest.id
-                FROM quest
-                JOIN quest_type
-                ON quest.type_id = quest_type.id
-                WHERE current_progress >= game_goal
-            )
-        `;
-
-        dbPool.query(query, (err, response) => {
-            if (err) {
-                reject(err);
-            }
-            console.log('isQuestCompleted');
-            resolve('Ok');
-        })
     });
 }
 
@@ -319,7 +296,6 @@ exports.loadQuests = (req, res) => {
                 
                 for (key of Object.keys(count)) {
                     console.log(await updateQuest(id, questTypes[key], count[key]));
-                    console.log(await isQuestCompleted());
                 }
 
                 quests = await getQuests(id);
@@ -334,3 +310,26 @@ exports.loadQuests = (req, res) => {
         }
     })();
 };
+
+
+exports.deleteQuests = (req, res) => {
+    console.log('delete');
+    const questsToDelete = req.body.completedQuests;
+    const query = `
+            DELETE
+            FROM quest
+            WHERE quest.id 
+            IN(
+                ${questsToDelete}
+            )
+        `;
+
+        dbPool.query(query, (err, response) => {
+            if (err) {
+                return(err);
+            }
+            console.log('Deleted');
+            res.json('Ok');
+        })
+};
+
