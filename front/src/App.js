@@ -12,6 +12,8 @@ import { Route } from 'react-router-dom';
 import { getNames } from './utils/mapNames';
 import axios from 'axios';
 import Layout from './components/Layout/Layout';
+import Server from './components/Layout/Navbar/Server/Server';
+
 
 class App extends Component {
 
@@ -61,6 +63,7 @@ class App extends Component {
                   searchTerm={this.props.searchTerm}
                 />}
             />
+            <Server />
           </Navbar>
           <MainContent>
             <Route path='/' exact render={Home} />

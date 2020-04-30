@@ -10,13 +10,12 @@ const Quest = ({questInfo, completeQuestHandler}) => {
 
 
     useEffect(() => {
-        console.log('mounted');
+        console.log('Update');
         if (questInfo.gameGoal === questInfo.currentProgress) {
             completeQuestHandler(questInfo.id);
         }
     }, [questInfo]);
 
-    console.log(questInfo)
     const description = questInfo.description
     .replace('$questGoal', questInfo.questGoal)
     .replace('$gameGoal', questInfo.gameGoal);

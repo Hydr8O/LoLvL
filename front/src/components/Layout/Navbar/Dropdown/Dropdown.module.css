@@ -1,0 +1,16 @@
+.Dropdown {
+    display: grid;
+    grid-row-gap: 1rem;
+    grid-template-columns: repeat(2, auto);
+    grid-column-gap: 2rem;
+    list-style: none;
+    position: absolute;
+    transform: translate(-100%, 4rem);
+    left: 100%;
+    top: 0;
+    background-color: white;
+    padding: 1.5rem;
+    border-bottom-left-radius: .5rem;
+    border-bottom-right-radius: .5rem;
+    z-index: 1;
+}

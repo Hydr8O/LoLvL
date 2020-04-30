@@ -16,8 +16,30 @@ These styles are applied when quest is being deleted
 }
 
 .fade-slide-exit-active {
-    opacity: 0;
-    transition: all 1s ease-out;
-    transform: translateX(10rem);
+    animation: deleteQuest 2s ease-out;
+}
+
+@keyframes deleteQuest {
+    0% {
+        opacity: 1;
+        transform: translateX(0);
+    }
+
+    20% {
+        opacity: 1;
+        background-color: var(--color-green);
+        transform: translateX(0);
+    }
+
+    60% {
+        opacity: 1;
+        background-color: var(--color-green);
+        transform: translateX(0);
+    }
+
+    100% {
+        opacity: 0;
+        transform: translateX(10rem);
+    }
 }
 

@@ -28,7 +28,6 @@ const Quests = (props) => {
     }
 
     const refreshQuestsHandler = async () => {
-        console.log(completedQuests);
         try {
             setDisableBtn(true);
             const matchesBaseInfo = await matchInfo.matchesBaseInfo(
@@ -66,32 +65,36 @@ const Quests = (props) => {
                     summonerId: props.id,
                 }
             );
-            if (completedQuests.length !== 0) {
-                await axios.post('http://localhost:1234/summoner/quests/delete', {completedQuests});
-            }  
             await refreshQuests();
             
             
-            console.log(completedQuests);
             setDisableBtn(false);
         } catch(err) {
             console.log(err);
         }
     };
 
+    useEffect(() => {
+        if (completedQuests.length !== 0) {
+            (async () => {
+                console.log('deleting')
+                await axios.post('http://localhost:1234/summoner/quests/delete', {completedQuests});
+                await refreshQuests();
+                console.log('completed');
+            })(); 
+        }  
+    }, [completedQuests]);
 
     useEffect(() => {
         (async () => {
             await refreshQuests();
-            console.log(questsInfo);
         })();
     }, []);
 
     if (questsInfo) {
-        console.log(questsInfo)
         const questsArray = questsInfo.map(quest => {
             return (
-                <CSSTransition key={quest.id} classNames='fade-slide' timeout={1000}>
+                <CSSTransition key={quest.id} classNames='fade-slide' timeout={2000}>
                     <Quest questInfo={quest} completeQuestHandler={completeQuestHandler}/>
                 </CSSTransition>
             );

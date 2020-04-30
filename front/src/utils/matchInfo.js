@@ -24,7 +24,6 @@ const matchInfo = async (match, summonerId, mappedItemNames, mappedChampNames) =
     const summonerInfo = data.participants[participantId - 1];
     idToName(summonerInfo, ITEMS, mappedItemNames, true);
     idToName(summonerInfo, 'championId', mappedChampNames);
-    console.log(data);
     return {
         queueId: data.queueId,
         gameId: match.gameId,
