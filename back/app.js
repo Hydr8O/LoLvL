@@ -19,7 +19,9 @@ app.use('/summoner', summonerRoutes);
 app.use(dataForQuestsRoutes);
 
 app.get('/match/:gameId', (req, res) => {
+    console.log('match')
     const gameId = req.params.gameId;
+    const server = req.params.server;
     axios.get(req.app.locals.endpoints.matchInfoPoint.replace('gameId', gameId))
         .then(({ data }) => {
             res.json(data);
@@ -28,13 +30,15 @@ app.get('/match/:gameId', (req, res) => {
 
 app.get('/matches/:accountId', (req, res) => {
     const accountId = req.params.accountId;
+    const server = req.query.server;
+    console.log(accountId);
 
     let numberOfEntries = 100;
     if (req.query.numberOfEntries) {
         numberOfEntries = req.query.numberOfEntries;
     }
 
-    axios.get(req.app.locals.endpoints.matchPoint.replace('accountId', accountId).replace('numberOfEntries', numberOfEntries))
+    axios.get(req.app.locals.endpoints.matchPoint.replace('accountId', accountId).replace('numberOfEntries', numberOfEntries).replace('server', server))
         .then(({ data }) => {
             res.json(data);
         })

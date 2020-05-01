@@ -1,17 +1,16 @@
 const initialState = {
-    endpoints: {},
-    mappedNames: {},
-};
+    server: 'ru'
+}
 
 const reducer = (state = initialState, action) => {
     switch (action.type) {
-        case 'INITIALIZE':
+        case 'CHANGE_SERVER':
             return {
                 ...state,
-                ...action.payload
+                server: action.payload
             }
-    };
-    return state
-};
+    }
+    return state;
+}
 
 export default reducer;

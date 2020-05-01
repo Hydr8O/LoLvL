@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, useEffect } from 'react';
 import { BrowserRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import './App.css';
@@ -12,27 +12,25 @@ import { Route } from 'react-router-dom';
 import { getNames } from './utils/mapNames';
 import axios from 'axios';
 import Layout from './components/Layout/Layout';
-import Server from './components/Layout/Navbar/Server/Server';
+import Server from './containers/Server/Server';
 
 
 class App extends Component {
 
   async initialize() {
     const { data } = await axios.get("https://ddragon.leagueoflegends.com/api/versions.json")
-    const apiKey = "RGAPI-aa41e0d7-916c-4096-81ad-d6b6086d51c3";
     const language = "en_US";
-    const server = "ru";
     const newestVersion = data[0];
     const endpoints = {
-      summonerPoint: `https://${server}.api.riotgames.com/lol/summoner/v4/summoners/by-name/summonerName?api_key=${apiKey}`,
-      rankPoint: `https://${server}.api.riotgames.com/lol/league/v4/entries/by-summoner/summonerId?api_key=${apiKey}`,
-      currentGamePoint: `https://${server}.api.riotgames.com/lol/spectator/v4/active-games/by-summoner/summonerId?api_key=${apiKey}`,
-      championMasteryPoint: `https://${server}.api.riotgames.com/lol/champion-mastery/v4/champion-masteries/by-summoner/summonerId?api_key=${apiKey}`,
+      summonerPoint: `http://localhost:1234/summoner/summonerInfo/summonerName?server=${this.props.server}`,
+      postSummoner: `http://localhost:1234/summoner/summonerInfo/summonerName`,
+      rankPoint: `http://localhost:1234/summoner/rankInfo/summonerId?server=${this.props.server}`,
+      championMasteryPoint: `http://localhost:1234/summoner/masteryInfo/summonerId?server=${this.props.server}`,
       championsPoint: `http://ddragon.leagueoflegends.com/cdn/${newestVersion}/data/${language}/champion.json`,
       spellPoint: `http://ddragon.leagueoflegends.com/cdn/${newestVersion}/data/${language}/summoner.json`,
       itemPoint: `http://ddragon.leagueoflegends.com/cdn/${newestVersion}/data/${language}/item.json`,
-      matchPoint: `https://${server}.api.riotgames.com/lol/match/v4/matchlists/by-account/accountId?api_key=${apiKey}&endIndex=numberOfEntries`,
-      matchInfoPoint: `https://${server}.api.riotgames.com/lol/match/v4/matches/matchId?api_key=${apiKey}`
+      postGameStats: `http://localhost:1234/summoner/gameStats/summonerName`,
+      isInDb: `http://localhost:1234/summoner/check/summonerId`
     }
 
     const mappedChampNames = await getNames(endpoints.championsPoint);
@@ -44,6 +42,12 @@ class App extends Component {
   componentDidMount() {
     this.initialize();
   };
+
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.server !== this.props.server) {
+      this.initialize();
+    }
+  }
 
 
   render() {
@@ -63,7 +67,9 @@ class App extends Component {
                   searchTerm={this.props.searchTerm}
                 />}
             />
-            <Server />
+            <Server 
+            changeServer={this.props.changeServer} 
+            server={this.props.server}/>
           </Navbar>
           <MainContent>
             <Route path='/' exact render={Home} />
@@ -71,6 +77,7 @@ class App extends Component {
               <Summoner
                 endpoints={this.props.endpoints}
                 mappedNames={this.props.mappedNames}
+                server={this.props.server}
               />
             }
             />
@@ -88,10 +95,14 @@ class App extends Component {
   }
 }
 
-const mapStateToProps = ({init}) => {
+const mapStateToProps = ({init, app, summoner, search}) => {
   return {
     endpoints: init.endpoints,
     mappedNames: init.mappedNames,
+    server: app.server,
+    summonerName: summoner.summonerInfo.name,
+    summonerId: summoner.summonerInfo.id,
+    searchTerm: search.searchTerm
   }
 };
 
@@ -101,6 +112,12 @@ const mapDispatchToProps = (dispatch) => {
       {
         type: 'INITIALIZE',
         payload: { endpoints: endpoints, mappedNames: mappedNames }
+      }
+    ),
+    changeServer: (server) => dispatch(
+      {
+        type: 'CHANGE_SERVER',
+        payload: server
       }
     )
   };

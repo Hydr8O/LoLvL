@@ -19,7 +19,6 @@ const Button = ({children, type, align, onClick, disabled, link=false, to}) => {
     <button disabled={disabled} className={[classes.Button, classes[type], classes[align]].join(' ')} onClick={onClickListener}>
             {children}
         </button>
-    console.log(to);
     return (
         <Fragment>
             {btn}

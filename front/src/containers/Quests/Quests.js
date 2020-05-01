@@ -1,11 +1,11 @@
 import React, { useEffect, useState, Fragment } from 'react';
-import Jumbotron from '../Jumbotron/Jumbotron';
+import Jumbotron from '../../components/Jumbotron/Jumbotron';
 import axios from 'axios';
 import classes from './Quests.module.css';
 import matchInfo from '../../utils/matchInfo';
-import Quest from './Quest/Quest';
-import Button from '../Button/Button';
-import Loading from '../Loading/Loading';
+import Quest from '../../components/Quest/Quest';
+import Button from '../../components/Button/Button';
+import Loading from '../../components/Loading/Loading';
 import TransitionGroup from 'react-transition-group/TransitionGroup';
 import CSSTransition from 'react-transition-group/CSSTransition';
 

@@ -3,8 +3,11 @@ const axios = require('axios');
 
 exports.getSummonerData = (req, res) => {
     const summonerName = req.params.summonerName;
-    console.log(encodeURI(req.app.locals.endpoints.summonerPoint.replace('summonerName', summonerName)));
-    axios.get(encodeURI(req.app.locals.endpoints.summonerPoint.replace('summonerName', summonerName)))
+    const server = req.query.server;
+    console.log(server);
+
+    console.log(encodeURI(req.app.locals.endpoints.summonerPoint.replace('summonerName', summonerName).replace('server', server)));
+    axios.get(encodeURI(req.app.locals.endpoints.summonerPoint.replace('summonerName', summonerName).replace('server', server)))
         .then(({ data }) => {
             res.json(data);
         })
@@ -15,7 +18,8 @@ exports.getSummonerData = (req, res) => {
 
 exports.getRankData = (req, res) => {
     const summonerId = req.params.summonerId;
-    axios.get(req.app.locals.endpoints.rankPoint.replace('summonerId', summonerId))
+    const server = req.query.server;
+    axios.get(req.app.locals.endpoints.rankPoint.replace('summonerId', summonerId).replace('server', server))
         .then(({ data }) => {
             res.json(data);
         }).catch(err => {
@@ -25,7 +29,8 @@ exports.getRankData = (req, res) => {
 
 exports.getMasteryData = (req, res) => {
     const summonerId = req.params.summonerId;
-    axios.get(req.app.locals.endpoints.championMasteryPoint.replace('summonerId', summonerId))
+    const server = req.query.server;
+    axios.get(req.app.locals.endpoints.championMasteryPoint.replace('summonerId', summonerId).replace('server', server))
         .then(({ data }) => {
             res.json(data);
         }).catch(err => {
