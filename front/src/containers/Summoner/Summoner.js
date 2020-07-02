@@ -29,25 +29,6 @@ class Summoner extends Component {
         this.setState({ showBackdrop: false });
     };
 
-    onScrollLoadHandler = () => {
-        if (window.innerHeight + window.pageYOffset > document.body.clientHeight - 50 &&
-            this.props.matchHistory) {
-            console.log('asdasd')
-            matchInfo.matches(
-                this.props.matchHistory.slice(0, this.props.numberOfMatches),
-                this.props.summonerInfo.id,
-                this.props.mappedNames.mappedItemNames,
-                this.props.mappedNames.mappedChampNames,
-                this.props.server)
-                .then(matchesFullInfo => {
-                    console.log(matchesFullInfo)
-                    console.log(this.props.recentGames);
-                    this.props.onScrollLoad({ recentGames: matchesFullInfo, allLoaded: true });
-                });
-            window.removeEventListener('scroll', this.onScrollLoadHandler);
-
-        }
-    }
 
     analyzeSummonerHandler = () => {
         this.setState({ disableBtn: true });
@@ -134,13 +115,9 @@ class Summoner extends Component {
         this.props.onReset();
     }
 
-
-
-
     componentDidUpdate() {
         console.log('updated');
     }
-
 
 
     findSummonerHandler = (event) => {
@@ -151,23 +128,42 @@ class Summoner extends Component {
 
             })
             .then(() => {
+                console.log('Checking in db');
                 return axios.get(this.props.endpoints.isInDb.replace('summonerId', this.props.summonerInfo.id));
             })
             .then(({ data }) => {
                 this.props.onInDb(data.isInDb);
                 console.log(this.props);
-
+                console.log('Checked in db');
+            })
+            .then(() => {
+                setTimeout(() => {
+                    console.log('Getting matches')
+                matchInfo.matches(
+                    this.props.matchHistory.slice(0, this.props.numberOfMatches),
+                    this.props.summonerInfo.id,
+                    this.props.mappedNames.mappedItemNames,
+                    this.props.mappedNames.mappedChampNames,
+                    this.props.server)
+                    .then(matchesFullInfo => {
+                        console.log(matchesFullInfo)
+                        console.log(this.props.recentGames);
+                        this.props.onScrollLoad({ recentGames: matchesFullInfo, allLoaded: true });
+                    });
+                }, 1000);
+                
             })
             .catch(err => {
                 console.log(err);
             });
-
+            
         event.preventDefault();
     }
 
     async getAllInfo() {
         try {
             const data = await this.getSummonerData();
+            console.log(data);
             const { id, name, puuid, accountId, summonerLevel, revisionDate, profileIconId } = data;
             this.props.onSummonerBaseInfo(
                 {
@@ -227,11 +223,18 @@ class Summoner extends Component {
     }
 
     async getSummonerData() {
+        console.log(this.props.endpoints);
         const { data } = await axios.get(this.props.endpoints.summonerPoint.replace('summonerName', this.props.searchTerm));
         return data;
     }
 
-
+    // componentWillReceiveProps(nextProps) {
+    //     for (const index in nextProps) {
+    //       if (nextProps[index] !== this.props[index]) {
+    //         console.log(index, this.props[index], '-->', nextProps[index]);
+    //       }
+    //     }
+    //   }
 
     render() {
         const toRender = [
@@ -282,6 +285,7 @@ class Summoner extends Component {
                             mappedNames={this.props.mappedNames}
                             accountId={this.props.summonerInfo.accountId}
                             name={this.props.summonerInfo.name}
+                            server={this.props.server}
                         />}
                     />
                     <Route path='/summoner/:summonerId' render={() => toRender} />

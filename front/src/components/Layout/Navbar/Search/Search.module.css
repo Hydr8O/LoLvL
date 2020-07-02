@@ -15,7 +15,7 @@
     padding: 1rem 3.5rem 1rem 1rem;
     font-size: 1.5rem;
     transition: all .5s;
-    width: 30%;
+    width: 40%;
     
 }
 
@@ -44,6 +44,38 @@
 
 .Button:focus {
     outline: none;
+}
+
+/* Media Queries */
+
+@media (max-width: 1400px) {
+    .Input {
+        width: 50%;
+    }
+
+    .Input:focus {
+        width: 57%;
+    }
+}
+
+@media (max-width: 1000px) {
+    .Input {
+        width: 60%;
+    }
+
+    .Input:focus {
+        width: 67%;
+    }
+}
+
+@media (max-width: 600px) {
+    .Input {
+        width: 75%;
+    }
+
+    .Input:focus {
+        width: 80%;
+    }
 }
 
 @keyframes fadeIn {

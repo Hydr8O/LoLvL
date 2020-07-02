@@ -185,14 +185,13 @@ exports.insertGameStats = (req, res) => {
 
 exports.isInDb = (req, res) => {
     const id = req.params.summonerId;
-    console.log(id);
-
+    
     dbPool.query(`SELECT id FROM summoner WHERE id = '${id}'`, (err, response) => {
         if (err) {
             console.log(err);
             return;
         }
-
+        console.log('Checked in db');
         res.json({
             isInDb: response.rows.length === 0 ? false : true
         });

@@ -9,7 +9,7 @@ const initialState = {
     recentGames: undefined,
     allLoaded: false,
     findSummonerHandler: undefined,
-    isInDb: false
+    isInDb: undefined
 };
 
 const reducer = (state = initialState, action) => {
@@ -39,6 +39,7 @@ const reducer = (state = initialState, action) => {
                 ...action.payload
             }
         case 'ON_SCROLL':
+            console.log("Recent games loaded");
             return {
                 ...state,
                 ...action.payload
@@ -64,8 +65,8 @@ const reducer = (state = initialState, action) => {
                 ...state,
                 isInDb: action.payload
             }
+        default: return state
     }; 
-    return state
 };
 
 export default reducer;

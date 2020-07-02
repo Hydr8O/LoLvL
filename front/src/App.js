@@ -1,4 +1,4 @@
-import React, { Component, useEffect } from 'react';
+import React, { Component } from 'react';
 import { BrowserRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import './App.css';
@@ -43,12 +43,17 @@ class App extends Component {
     this.initialize();
   };
 
-  componentWillReceiveProps(nextProps) {
-    if (nextProps.server !== this.props.server) {
-      this.initialize();
+  componentDidUpdate(prevProps) {
+    if (prevProps.server !== this.props.server) {
+      const endpoints = {
+        summonerPoint: `http://localhost:1234/summoner/summonerInfo/summonerName?server=${this.props.server}`,
+        postSummoner: `http://localhost:1234/summoner/summonerInfo/summonerName`,
+        rankPoint: `http://localhost:1234/summoner/rankInfo/summonerId?server=${this.props.server}`,
+        championMasteryPoint: `http://localhost:1234/summoner/masteryInfo/summonerId?server=${this.props.server}`,
+      }
+      this.props.setEndpoints(endpoints);
     }
   }
-
 
   render() {
     let layout = null;
@@ -118,6 +123,12 @@ const mapDispatchToProps = (dispatch) => {
       {
         type: 'CHANGE_SERVER',
         payload: server
+      }
+    ),
+    setEndpoints: (endpoints) => dispatch(
+      {
+        type: 'SET_ENDPOINTS',
+        payload: endpoints
       }
     )
   };

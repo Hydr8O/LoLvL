@@ -10,9 +10,9 @@ const reducer = (state = initialState, action) => {
                 ...state,
                 searchTerm: action.payload.searchTerm
             }
-    };
 
-    return state;
+        default: return state
+    };
 };
 
 export default reducer;

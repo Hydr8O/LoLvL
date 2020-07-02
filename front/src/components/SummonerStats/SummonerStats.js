@@ -1,6 +1,5 @@
 import React, { Fragment, useEffect } from 'react';
 import classes from './SummonerStats.module.css';
-import Loading from '../Loading/Loading';
 import SummonerProfile from './SummonerProfile/SummonerProfile';
 import SummonerRank from './SummonerRank/SummonerRank';
 import FavoriteLane from './FavoriteLane/FavoriteLane';
@@ -9,9 +8,9 @@ import FavoriteLane from './FavoriteLane/FavoriteLane';
 
 const SummonerStats = (props) => {
 
-    useEffect(() => {
-        window.addEventListener('scroll', props.scroll);
-    }, []);
+    // useEffect(() => {
+    //     window.addEventListener('scroll', props.scroll);
+    // }, [props.scroll]);
     
     return (
         <section className={classes.SummonerStats}>

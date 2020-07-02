@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useEffect} from 'react';
 import classes from './Quest.module.css';
 import QuestContent from './QuestContent/QuestContent';
 import QuestImg from './QuestImg/QuestImg';
@@ -14,7 +14,7 @@ const Quest = ({questInfo, completeQuestHandler}) => {
         if (questInfo.gameGoal === questInfo.currentProgress) {
             completeQuestHandler(questInfo.id);
         }
-    }, [questInfo]);
+    }, [questInfo, completeQuestHandler]);
 
     const description = questInfo.description
     .replace('$questGoal', questInfo.questGoal)

@@ -2,8 +2,8 @@ const axios = require('axios');
 const ranks = {
     // ranks: ['I', 'II', 'III', 'IV'],
     // tiers: ['IRON', 'BRONZE', 'SILVER', 'GOLD', 'PLATINUM', 'DIAMOND']
-    ranks: ['IV'],
-    tiers: ['BRONZE']
+    ranks: ['II'],
+    tiers: ['PLATINUM']
 }
 
 
@@ -56,7 +56,7 @@ const getAccIds = async (ids, req) => {
 const getGameIds = async (accIds, ids) => {
     try {
         const matchesProm = accIds.map((id, index) => {
-            return axios.get(`http://localhost:1234/matches/${id}?numberOfEntries=1`);
+            return axios.get(`http://localhost:1234/matches/${id}?server=ru&numberOfEntries=1`);
         });
         const matches = await Promise.all(matchesProm);
         return matches.map(({ data }, index) => {
@@ -91,7 +91,7 @@ const getDataForQuests = (req, res) => {
 
                     //Get game stats
                     const gameStatsProm = gameIdToSummoner.map(gameId => {
-                        return { gameStats: axios.get(`http://localhost:1234/match/${gameId.gameId}`), summonerId: gameId.summonerId };
+                        return { gameStats: axios.get(`http://localhost:1234/match/${gameId.gameId}?server=ru`), summonerId: gameId.summonerId };
                     });
                     const allGameStats = await contructAllGameStats(gameStatsProm, ids);
 

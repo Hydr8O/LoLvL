@@ -9,8 +9,9 @@ const reducer = (state = initialState, action) => {
                 ...state,
                 server: action.payload
             }
+        default:
+            return state
     }
-    return state;
 }
 
 export default reducer;

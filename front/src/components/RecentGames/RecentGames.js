@@ -5,14 +5,23 @@ import HeaderSecondary from '../HeaderSecondary/HeaderSecondary';
 
 class RecentGames extends Component {
     
-    shouldComponentUpdate() {
-        return !this.props.allLoaded;
+    shouldComponentUpdate(prevProps) {
+        return prevProps.recentGames !== this.props.recentGames;
     }
+
+    componentDidMount() {
+        console.log('Recent Games mounted');
+    }
+
+    componentDidUpdate() {
+        console.log('Recent Games updated');
+    }
+
     render() {
         const games = this.props.recentGames.map(game => {
             return <RecentGame recentGame={game} key={game.gameId}/>
         });
-        console.log('updated recent games');
+        
         return (
             <section className={classes.RecentGames}>
                 <HeaderSecondary> 

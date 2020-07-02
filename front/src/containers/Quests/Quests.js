@@ -33,13 +33,16 @@ const Quests = (props) => {
             const matchesBaseInfo = await matchInfo.matchesBaseInfo(
                 numberOfEntries,
                 props.accountId,
-                props.mappedNames.mappedChampNames
+                props.mappedNames.mappedChampNames,
+                props.server
+
             );
             const matchesFullInfo = await matchInfo.matches(
                 matchesBaseInfo,
                 props.id,
                 props.mappedNames.mappedItemNames,
-                props.mappedNames.mappedChampNames
+                props.mappedNames.mappedChampNames,
+                props.server
             );
     
             await axios.post(`http://localhost:1234/summoner/gameStats/${props.name}`,

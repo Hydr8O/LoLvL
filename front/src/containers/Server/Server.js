@@ -20,6 +20,7 @@ const Server = ({changeServer, server}) => {
     const changeServerHandler = (server) => {
         setActiveServer(server);
         changeServer(server);
+        toggleDropHandler();
     }
 
     const dropDownItems = servers.map(server => (

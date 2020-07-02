@@ -21,10 +21,13 @@ app.use(dataForQuestsRoutes);
 app.get('/match/:gameId', (req, res) => {
     console.log('match')
     const gameId = req.params.gameId;
-    const server = req.params.server;
-    axios.get(req.app.locals.endpoints.matchInfoPoint.replace('gameId', gameId))
+    const server = req.query.server;
+    axios.get(req.app.locals.endpoints.matchInfoPoint.replace('gameId', gameId).replace('server', server))
         .then(({ data }) => {
             res.json(data);
+        })
+        .catch(err => {
+            console.log(err);
         });
 });
 

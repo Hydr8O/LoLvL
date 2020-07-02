@@ -6,3 +6,9 @@
     grid-row-gap: 2rem;
     padding: 3rem;
 }
+
+@media only screen and (max-width: 1000px) {
+    .MainContent {
+        padding: 0;
+    }
+}

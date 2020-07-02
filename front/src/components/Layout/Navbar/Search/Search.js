@@ -6,7 +6,7 @@ import SVG from '../../../SVG/SVG';
 const Search = (props) => {
     
     const getInputHandler = (event) => {
-        props.onSearchInput(event.target.value);
+        props.onSearchInput(event.target.value); 
     };
     
     return (
@@ -16,6 +16,7 @@ const Search = (props) => {
                 placeholder='Summoner Name'
                 onChange={getInputHandler}
                 value={props.searchTerm}
+                maxLength={15}
             />
             <button type='submit' className={classes.Button} onClick={props.findSummoner}>
                 <SVG className={classes.Icon} iconName="icon-zoom-outline"/>

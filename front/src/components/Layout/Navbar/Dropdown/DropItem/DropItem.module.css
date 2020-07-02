@@ -1,6 +1,6 @@
 .DropItem {
     cursor: pointer;
-    border: 1px solid var(--color-primary);
+    border: 1px solid var(--color-blue);
     padding: .5rem;
     border-radius: .5rem;
     display: flex;
@@ -15,11 +15,11 @@
 }
 
 .DropItem:hover {
-    background-color: var(--color-primary);
+    background-color: var(--color-blue);
     color: white;
 }
 
 .ActiveItem {
-    background-color: var(--color-primary);
+    background-color: var(--color-blue);
     color: white;
 }

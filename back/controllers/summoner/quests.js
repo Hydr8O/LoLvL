@@ -65,8 +65,6 @@ const createNewQuests = async (summonerId, tier, rank) => {
             });
         });
     }
-
-
     
         try {
             const overallStats = await statsQuery('data_for_quests');
@@ -297,13 +295,14 @@ exports.loadQuests = (req, res) => {
                 for (key of Object.keys(count)) {
                     console.log(await updateQuest(id, questTypes[key], count[key]));
                 }
-
+                console.log('Updated');
                 quests = await getQuests(id);
+                console.log('Quests gotten');
             } else {
                 await createNewQuests(id, tier, rank);
                 quests = await getQuests(id);
             }      
-
+            console.log('Sending quests');
             res.json(quests);
         } catch (err) {
             console.log(err);

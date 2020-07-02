@@ -12,7 +12,16 @@ const SummonerProfile = (props) => {
     const setLoadingHandler = () => {
         setIsLoading(true);
     }
-    console.log(props)
+
+    useEffect(() => {
+        if (props.isInDb === undefined) {
+            setIsLoading(true);
+        } else {
+            setIsLoading(false);
+        }
+    }, [props.isInDb]);
+    
+
     return (
         <div className={classes.SummonerProfile}>
             <div className={classes.Profile}>

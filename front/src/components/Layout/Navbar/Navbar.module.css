@@ -7,3 +7,9 @@
     padding: 0 10rem;
     position: relative;
 }
+
+@media (max-width: 600px) {
+    .Navbar {
+        padding: 0 2rem;
+    }
+}

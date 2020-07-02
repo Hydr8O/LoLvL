@@ -10,8 +10,20 @@ const reducer = (state = initialState, action) => {
                 ...state,
                 ...action.payload
             }
+        case 'SET_ENDPOINTS':
+            console.log('set');
+            console.log(action.payload);
+            return {
+                ...state,
+                endpoints: {
+                    ...state.endpoints,
+                    ...action.payload
+
+                }
+            }
+        default:
+            return state
     };
-    return state
 };
 
 export default reducer;
